@@ -1,0 +1,9 @@
+retrying
+python-cdo
+beautifulsoup4
+pygrib
+netCDF4
+xarray
+requests
+loguru
+apscheduler
