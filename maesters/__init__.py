@@ -14,20 +14,38 @@ class Maester:
         self,
         source:str =DEFAULT_MAESTER.get('source'), 
         product:str = DEFAULT_MAESTER.get('product'),
-        date:datetime = DEFAULT_MAESTER.get('date'),
-        datahome:str = DEFAULT_MAESTER.get('datahome'),
         varname:str = DEFAULT_MAESTER.get('varname'),
-        hour: int = DEFAULT_MAESTER.get('hour'),
+        batch: datetime = None, # nwp batch start predict time UTC
+        date: datetime = None, # nwp predict variable time UTC
+        hour: int = None, # nwp predict variable hour from start predict time
+        datahome:str = DEFAULT_MAESTER.get('datahome'),
         **kwargs,
-        # data_type: data type for ENS prediction like enfo or geps, 'cf'/'pf1'/'pf2'/.../
+        # data_type: data type for ENS prediction to ECMWF ENFO, 'cf'/'pf1'/'pf2'/.../
+        # stats: stats method for ENS prediction enfo or geps 'ensmean'/'ensmax'/'ensmin'
         ) -> None:
 
         self.source = source
         self.product = product
-        self.date = date
         self.datahome = datahome
         self.varname = varname
-        self.hour = hour
+        
+        if isinstance(date,str):
+            date = datetime.strptime(date,'%Y-%m-%d %H:%M')
+        
+        if hour is None and date:
+            self.batch = date.replace(hour=int(date.hour/12)*12)
+            if isinstance(date,datetime):
+                self.hour = date - self.batch
+            elif isinstance(date,list):
+                self.hour = []
+                for d in date:
+                    if isinstance(d,str):d=datetime.strptime(d,'%Y-%m-%d %H:%M')
+                    self.hour.append(d - self.batch)
+
+        if isinstance(batch,datetime):
+            self.batch = batch
+        elif isinstance(batch,str):
+            self.batch = datetime.strptime(batch,'%Y-%m-%d %H:%M')
 
         for k,v in kwargs.items():
             setattr(self,k,v)
@@ -42,11 +60,11 @@ class Maester:
                 break
 
         if isinstance(hour,int):
-            self.download_dict = self._get_files_dict(date=self.date,hour=hour,var_dict={self.variable:self.out},**kwargs)
+            self.download_dict = self._get_files_dict(date=self.batch,hour=hour,var_dict={self.variable:self.out},**kwargs)
         elif isinstance(hour,list):
             self.download_dict ={}
             for h in hour:
-                d = self._get_files_dict(date=self.date,hour=h,var_dict={self.variable:self.out},**kwargs)
+                d = self._get_files_dict(date=self.batch,hour=h,var_dict={self.variable:self.out},**kwargs)
                 for k,v in d.items():
                     self.download_dict[k] = v
     
@@ -59,7 +77,7 @@ class Maester:
         with ThreadPoolExecutor(max_workers=MAX_NUMBER) as pool:
             for k,v in self.download_dict.items():
                 local_fp = os.path.join(local_dir,f'{k}.nc') if local_dir else \
-                    os.path.join(self.datahome,f'{self.source}',f'{self.product}',self.date.strftime('%Y%m%d%H0000'),f'{k}.nc')
+                    os.path.join(self.datahome,f'{self.source}',f'{self.product}',self.batch.strftime('%Y%m%d%H0000'),f'{k}.nc')
                 v['local_fp'] = local_fp
                 res.append(pool.submit(self._download,**v))
                 self.local_fp.append(local_fp)

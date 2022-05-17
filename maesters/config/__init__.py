@@ -29,9 +29,8 @@ class MODEL:
     modelname: str
     variable: dict
     data_dir: str
-    archive_dir: str
     download_url: str
-    login_url: str
+    delay_hours: int
 
 def get_model(name:str):
     with open(os.path.join(os.path.dirname(__file__),'models.toml'),'r') as f:
@@ -45,7 +44,12 @@ def get_model(name:str):
         else:
             for v in varibales:
                 var_dict[V(v[0],v[1],v[2])] = O(v[3])
-        m = MODEL(name,var_dict,model.get('data_dir'),model.get('archive_dir'),model.get('download_url'),model.get('login_url'))
+        m = MODEL(
+            name,
+            var_dict,
+            model.get('data_dir'),
+            model.get('download_url'),
+            model.get('delay_hours'))
         return m
     else:
         return None
@@ -71,7 +75,6 @@ DEFAULT_MAESTER = {
     'source': 'ecmwf',
     'product': 'enfo',
     'varname': 'TMP_L0',
-    'hour': 3,
 }
 
 

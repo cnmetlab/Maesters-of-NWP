@@ -133,7 +133,7 @@ def convert_cmc_gem(grib_dir:str,out_dir:str):
 
 @retry(stop_max_delay=3*60*60*10E3,stop_max_attempt_number=1)
 def operation(data_dir:str=None):
-    now = datetime.utcnow() - timedelta(hours=6)
+    now = datetime.utcnow() - timedelta(hours=4)
     batch = int(now.hour/12)*12
     tmp_dir = now.strftime(os.path.join(CMC_GEM.data_dir+'_tmp', f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir+'_tmp'
     data_dir = now.strftime(os.path.join(CMC_GEM.data_dir, f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir

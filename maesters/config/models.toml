@@ -1,7 +1,7 @@
 
 [cmc_gem]
 data_dir = '~/data/eccc/GEM/orig'
-archive_dir = '~/data/eccc/GEM/archive'
+delay_hours = 4
 download_url = 'https://dd.weather.gc.ca/model_gem_global/15km/grib2/lat_lon/{batch}/{hour}/CMC_glb_{var}_{level_type}_{level}_latlon.15x.15_%Y%m%d%H_P{hour}.grib2'
 variables = [
     ['SWAT',      'DBLL',   '10cm', 'SWAT_CM10'],
@@ -43,36 +43,36 @@ variables = [
     ['ULWRF',     'SFC',    '0',    'ULWRF_L0'],
     ['USWRF',     'SFC',    '0',    'USWRF_L0'],
     ['WEASD',     'SFC',    '0',    'WEASD_L0'],
-    # ['HGT',       'ISBL',   '0010', 'HGT_P010'],
-    # ['RH',        'ISBL',   '0010', 'RHU_P010'],
-    # ['TMP',       'ISBL',   '0010', 'TMP_P010'],
-    # ['UGRD',      'ISBL',   '0010', 'U_P010'],
-    # ['VGRD',      'ISBL',   '0010', 'V_P010'],
-    # ['HGT',       'ISBL',   '0050', 'HGT_P050'],
-    # ['RH',        'ISBL',   '0050', 'RHU_P050'],
-    # ['TMP',       'ISBL',   '0050', 'TMP_P050'],
-    # ['UGRD',      'ISBL',   '0050', 'U_P050'],
-    # ['VGRD',      'ISBL',   '0050', 'V_P050'],
-    # ['HGT',       'ISBL',   '0100', 'HGT_P100'],
-    # ['RH',        'ISBL',   '0100', 'RHU_P100'],
-    # ['TMP',       'ISBL',   '0100', 'TMP_P100'],
-    # ['UGRD',      'ISBL',   '0100', 'U_P100'],
-    # ['VGRD',      'ISBL',   '0100', 'V_P100'],
-    # ['HGT',       'ISBL',   '0200', 'HGT_P200'],
-    # ['RH',        'ISBL',   '0200', 'RHU_P200'],
-    # ['TMP',       'ISBL',   '0200', 'TMP_P200'],
-    # ['UGRD',      'ISBL',   '0200', 'U_P200'],
-    # ['VGRD',      'ISBL',   '0200', 'V_P200'],
-    # ['HGT',       'ISBL',   '0250', 'HGT_P250'],
-    # ['RH',        'ISBL',   '0250', 'RHU_P250'],
-    # ['TMP',       'ISBL',   '0250', 'TMP_P250'],
-    # ['UGRD',      'ISBL',   '0250', 'U_P250'],
-    # ['VGRD',      'ISBL',   '0250', 'V_P250'],
-    # ['HGT',       'ISBL',   '0300', 'HGT_P300'],
-    # ['UGRD',      'ISBL',   '0300', 'U_P300'],
-    # ['VGRD',      'ISBL',   '0300', 'V_P300'],
-    # ['UGRD',      'ISBL',   '0400', 'U_P400'],
-    # ['VGRD',      'ISBL',   '0400', 'V_P400'],
+    ['HGT',       'ISBL',   '0010', 'HGT_P010'],
+    ['RH',        'ISBL',   '0010', 'RHU_P010'],
+    ['TMP',       'ISBL',   '0010', 'TMP_P010'],
+    ['UGRD',      'ISBL',   '0010', 'U_P010'],
+    ['VGRD',      'ISBL',   '0010', 'V_P010'],
+    ['HGT',       'ISBL',   '0050', 'HGT_P050'],
+    ['RH',        'ISBL',   '0050', 'RHU_P050'],
+    ['TMP',       'ISBL',   '0050', 'TMP_P050'],
+    ['UGRD',      'ISBL',   '0050', 'U_P050'],
+    ['VGRD',      'ISBL',   '0050', 'V_P050'],
+    ['HGT',       'ISBL',   '0100', 'HGT_P100'],
+    ['RH',        'ISBL',   '0100', 'RHU_P100'],
+    ['TMP',       'ISBL',   '0100', 'TMP_P100'],
+    ['UGRD',      'ISBL',   '0100', 'U_P100'],
+    ['VGRD',      'ISBL',   '0100', 'V_P100'],
+    ['HGT',       'ISBL',   '0200', 'HGT_P200'],
+    ['RH',        'ISBL',   '0200', 'RHU_P200'],
+    ['TMP',       'ISBL',   '0200', 'TMP_P200'],
+    ['UGRD',      'ISBL',   '0200', 'U_P200'],
+    ['VGRD',      'ISBL',   '0200', 'V_P200'],
+    ['HGT',       'ISBL',   '0250', 'HGT_P250'],
+    ['RH',        'ISBL',   '0250', 'RHU_P250'],
+    ['TMP',       'ISBL',   '0250', 'TMP_P250'],
+    ['UGRD',      'ISBL',   '0250', 'U_P250'],
+    ['VGRD',      'ISBL',   '0250', 'V_P250'],
+    ['HGT',       'ISBL',   '0300', 'HGT_P300'],
+    ['UGRD',      'ISBL',   '0300', 'U_P300'],
+    ['VGRD',      'ISBL',   '0300', 'V_P300'],
+    ['UGRD',      'ISBL',   '0400', 'U_P400'],
+    ['VGRD',      'ISBL',   '0400', 'V_P400'],
     ['HGT',       'ISBL',   '0500', 'HGT_P500'],
     ['RH',        'ISBL',   '0500', 'RHU_P500'],
     ['TMP',       'ISBL',   '0500', 'TMP_P500'],
@@ -103,7 +103,7 @@ variables = [
 
 [cmc_geps_ens]
 data_dir = '~/data/cmc/GEPS_ENS/orig'
-archive_dir = '~/data/cmc/GEPS_ENS/archive'
+delay_hours = 6
 download_url = 'https://dd.weather.gc.ca/ensemble/geps/grib2/{PRODUCT}/{batch}/{hour}/CMC_geps-{TYPE}_{var}_{level_type}_{level}_latlon0p5x0p5_%Y%m%d%H_P{hour}_allmbrs.grib2'
 variables = [
     ['SWAT',      'DBLL',   '10cm', 'SWAT_CM10'],
@@ -145,36 +145,36 @@ variables = [
     ['ULWRF',     'SFC',    '0',    'ULWRF_L0'],
     ['USWRF',     'SFC',    '0',    'USWRF_L0'],
     ['WEASD',     'SFC',    '0',    'WEASD_L0'],
-    # ['HGT',       'ISBL',   '0010', 'HGT_P010'],
-    # ['RH',        'ISBL',   '0010', 'RHU_P010'],
-    # ['TMP',       'ISBL',   '0010', 'TMP_P010'],
-    # ['UGRD',      'ISBL',   '0010', 'U_P010'],
-    # ['VGRD',      'ISBL',   '0010', 'V_P010'],
-    # ['HGT',       'ISBL',   '0050', 'HGT_P050'],
-    # ['RH',        'ISBL',   '0050', 'RHU_P050'],
-    # ['TMP',       'ISBL',   '0050', 'TMP_P050'],
-    # ['UGRD',      'ISBL',   '0050', 'U_P050'],
-    # ['VGRD',      'ISBL',   '0050', 'V_P050'],
-    # ['HGT',       'ISBL',   '0100', 'HGT_P100'],
-    # ['RH',        'ISBL',   '0100', 'RHU_P100'],
-    # ['TMP',       'ISBL',   '0100', 'TMP_P100'],
-    # ['UGRD',      'ISBL',   '0100', 'U_P100'],
-    # ['VGRD',      'ISBL',   '0100', 'V_P100'],
-    # ['HGT',       'ISBL',   '0200', 'HGT_P200'],
-    # ['RH',        'ISBL',   '0200', 'RHU_P200'],
-    # ['TMP',       'ISBL',   '0200', 'TMP_P200'],
-    # ['UGRD',      'ISBL',   '0200', 'U_P200'],
-    # ['VGRD',      'ISBL',   '0200', 'V_P200'],
-    # ['HGT',       'ISBL',   '0250', 'HGT_P250'],
-    # ['RH',        'ISBL',   '0250', 'RHU_P250'],
-    # ['TMP',       'ISBL',   '0250', 'TMP_P250'],
-    # ['UGRD',      'ISBL',   '0250', 'U_P250'],
-    # ['VGRD',      'ISBL',   '0250', 'V_P250'],
-    # ['HGT',       'ISBL',   '0300', 'HGT_P300'],
-    # ['UGRD',      'ISBL',   '0300', 'U_P300'],
-    # ['VGRD',      'ISBL',   '0300', 'V_P300'],
-    # ['UGRD',      'ISBL',   '0400', 'U_P400'],
-    # ['VGRD',      'ISBL',   '0400', 'V_P400'],
+    ['HGT',       'ISBL',   '0010', 'HGT_P010'],
+    ['RH',        'ISBL',   '0010', 'RHU_P010'],
+    ['TMP',       'ISBL',   '0010', 'TMP_P010'],
+    ['UGRD',      'ISBL',   '0010', 'U_P010'],
+    ['VGRD',      'ISBL',   '0010', 'V_P010'],
+    ['HGT',       'ISBL',   '0050', 'HGT_P050'],
+    ['RH',        'ISBL',   '0050', 'RHU_P050'],
+    ['TMP',       'ISBL',   '0050', 'TMP_P050'],
+    ['UGRD',      'ISBL',   '0050', 'U_P050'],
+    ['VGRD',      'ISBL',   '0050', 'V_P050'],
+    ['HGT',       'ISBL',   '0100', 'HGT_P100'],
+    ['RH',        'ISBL',   '0100', 'RHU_P100'],
+    ['TMP',       'ISBL',   '0100', 'TMP_P100'],
+    ['UGRD',      'ISBL',   '0100', 'U_P100'],
+    ['VGRD',      'ISBL',   '0100', 'V_P100'],
+    ['HGT',       'ISBL',   '0200', 'HGT_P200'],
+    ['RH',        'ISBL',   '0200', 'RHU_P200'],
+    ['TMP',       'ISBL',   '0200', 'TMP_P200'],
+    ['UGRD',      'ISBL',   '0200', 'U_P200'],
+    ['VGRD',      'ISBL',   '0200', 'V_P200'],
+    ['HGT',       'ISBL',   '0250', 'HGT_P250'],
+    ['RH',        'ISBL',   '0250', 'RHU_P250'],
+    ['TMP',       'ISBL',   '0250', 'TMP_P250'],
+    ['UGRD',      'ISBL',   '0250', 'U_P250'],
+    ['VGRD',      'ISBL',   '0250', 'V_P250'],
+    ['HGT',       'ISBL',   '0300', 'HGT_P300'],
+    ['UGRD',      'ISBL',   '0300', 'U_P300'],
+    ['VGRD',      'ISBL',   '0300', 'V_P300'],
+    ['UGRD',      'ISBL',   '0400', 'U_P400'],
+    ['VGRD',      'ISBL',   '0400', 'V_P400'],
     ['HGT',       'ISBL',   '0500', 'HGT_P500'],
     ['RH',        'ISBL',   '0500', 'RHU_P500'],
     ['TMP',       'ISBL',   '0500', 'TMP_P500'],
@@ -203,16 +203,10 @@ variables = [
     ['UGRD',      'ISBL',   '1000', 'U_P1000'],
 ]
 
-[ncep_fnl]
-data_dir = '/var/lib/data/ncep/fnl/orig'
-archive_dir = '/var/lib/data/ncep/fnl/archive'
-download_url = 'http://rda.ucar.edu/data/OS/ds083.2/grib2/%Y/%Y.%m/fnl_%Y%m%d_%H_00.grib2'
-login_url = 'https://rda.ucar.edu/cgi-bin/login'
-
 
 [dwd_icon]
-data_dir = '/var/lib/data/dwd/icon/orig'
-archive_dir = '/var/lib/data/dwd/icon/archive'
+data_dir = '~/data/dwd/icon/orig'
+delay_hours = 4
 download_url = 'https://opendata.dwd.de/weather/nwp/icon/grib/{batch}/{variable}/icon_global_*_*_%Y%m%d%H_{hour}_{VARIABLE}.grib2.bz2'
 variables = [
     ['ALB_RAD',   'single',    '0',   'ALB_RAD_L0'], # surface_albedo
@@ -260,59 +254,57 @@ variables = [
     ['U_10M',     'single',    '10',  'U_L0'], #  10 metre U wind component
     ['V_10M',     'single',    '10',  'V_L0'], # 10 metre V wind component
     ['VMAX_10M',  'single',    '10',  'VMAX_L0'], # maximum Wind 10m
-
-    # ['FI',        'pressure',  '30',  'FI_P30'],
-    # ['RELHUM',    'pressure',  '30',  'RELHUM_P30'],
-    # ['FI',        'pressure',  '50',  'FI_P50'],
-    # ['RELHUM',    'pressure',  '50',  'RELHUM_P50'],
-    # ['FI',        'pressure',  '70',  'FI_P70'],
-    # ['RELHUM',    'pressure',  '70',  'RELHUM_P70'],
-    # ['FI',        'pressure',  '100', 'FI_P100'],
-    # ['RELHUM',    'pressure',  '100', 'RELHUM_P100'],
-    # ['FI',        'pressure',  '150', 'FI_P150'],
-    # ['RELHUM',    'pressure',  '150', 'RELHUM_P150'],
-    # ['FI',        'pressure',  '200', 'FI_P200'],
-    # ['RELHUM',    'pressure',  '200', 'RELHUM_P200'],
-    # ['FI',        'pressure',  '250', 'FI_P250'],
-    # ['RELHUM',    'pressure',  '250', 'RELHUM_P250'],
-    # ['FI',        'pressure',  '300', 'FI_P300'],
-    # ['RELHUM',    'pressure',  '300', 'RELHUM_P300'],
-    # ['FI',        'pressure',  '400', 'FI_P400'],
-    # ['RELHUM',    'pressure',  '400', 'RELHUM_P400'],
-    # ['FI',        'pressure',  '500', 'FI_P500'],
-    # ['RELHUM',    'pressure',  '500', 'RELHUM_P500'],
-    # ['FI',        'pressure',  '600', 'FI_P600'],
-    # ['RELHUM',    'pressure',  '600', 'RELHUM_P600'],
-    # ['FI',        'pressure',  '700', 'FI_P700'],
-    # ['RELHUM',    'pressure',  '700', 'RELHUM_P700'],
-    # ['FI',        'pressure',  '800', 'FI_P800'],
-    # ['RELHUM',    'pressure',  '800', 'RELHUM_P800'],
-    # ['FI',        'pressure',  '850', 'FI_P850'],
-    # ['RELHUM',    'pressure',  '850', 'RELHUM_P850'],
-    # ['FI',        'pressure',  '900', 'FI_P900'],
-    # ['RELHUM',    'pressure',  '900', 'RELHUM_P900'],
-    # ['FI',        'pressure',  '925', 'FI_P925'],
-    # ['RELHUM',    'pressure',  '925', 'RELHUM_P925'],
-    # ['FI',        'pressure',  '950', 'FI_P950'],
-    # ['RELHUM',    'pressure',  '950', 'RELHUM_P950'],
-    # ['FI',        'pressure',  '1000','FI_P1000'],
-    # ['RELHUM',    'pressure',  '1000','RELHUM_P1000'],
-
-    # ['P',         'model',     '90',  'P_MODEL90'],
-    # ['T',         'model',     '90',  'T_MODEL90'],
-    # ['U',         'model',     '90',  'U_MODEL90'],
-    # ['V',         'model',     '90',  'V_MODEL90'],
-    # ['W',         'model',     '90',  'W_MODEL90'],
-    # ['CLC',       'model',     '90',  'CLC_MODEL90'],
-    # ['QV',        'model',     '90',  'QV_MODEL90'],
-    # ['TKE',       'model',     '90',  'TKE_MODEL90'],
-    # ['T_SO',      'soil',      '0',   'T_SO_L0'], # ?
-    # ['W_SO',      'soil',      '0',   'W_SO_SOIL0'],
+    ['FI',        'pressure',  '30',  'FI_P30'],
+    ['RELHUM',    'pressure',  '30',  'RELHUM_P30'],
+    ['FI',        'pressure',  '50',  'FI_P50'],
+    ['RELHUM',    'pressure',  '50',  'RELHUM_P50'],
+    ['FI',        'pressure',  '70',  'FI_P70'],
+    ['RELHUM',    'pressure',  '70',  'RELHUM_P70'],
+    ['FI',        'pressure',  '100', 'FI_P100'],
+    ['RELHUM',    'pressure',  '100', 'RELHUM_P100'],
+    ['FI',        'pressure',  '150', 'FI_P150'],
+    ['RELHUM',    'pressure',  '150', 'RELHUM_P150'],
+    ['FI',        'pressure',  '200', 'FI_P200'],
+    ['RELHUM',    'pressure',  '200', 'RELHUM_P200'],
+    ['FI',        'pressure',  '250', 'FI_P250'],
+    ['RELHUM',    'pressure',  '250', 'RELHUM_P250'],
+    ['FI',        'pressure',  '300', 'FI_P300'],
+    ['RELHUM',    'pressure',  '300', 'RELHUM_P300'],
+    ['FI',        'pressure',  '400', 'FI_P400'],
+    ['RELHUM',    'pressure',  '400', 'RELHUM_P400'],
+    ['FI',        'pressure',  '500', 'FI_P500'],
+    ['RELHUM',    'pressure',  '500', 'RELHUM_P500'],
+    ['FI',        'pressure',  '600', 'FI_P600'],
+    ['RELHUM',    'pressure',  '600', 'RELHUM_P600'],
+    ['FI',        'pressure',  '700', 'FI_P700'],
+    ['RELHUM',    'pressure',  '700', 'RELHUM_P700'],
+    ['FI',        'pressure',  '800', 'FI_P800'],
+    ['RELHUM',    'pressure',  '800', 'RELHUM_P800'],
+    ['FI',        'pressure',  '850', 'FI_P850'],
+    ['RELHUM',    'pressure',  '850', 'RELHUM_P850'],
+    ['FI',        'pressure',  '900', 'FI_P900'],
+    ['RELHUM',    'pressure',  '900', 'RELHUM_P900'],
+    ['FI',        'pressure',  '925', 'FI_P925'],
+    ['RELHUM',    'pressure',  '925', 'RELHUM_P925'],
+    ['FI',        'pressure',  '950', 'FI_P950'],
+    ['RELHUM',    'pressure',  '950', 'RELHUM_P950'],
+    ['FI',        'pressure',  '1000','FI_P1000'],
+    ['RELHUM',    'pressure',  '1000','RELHUM_P1000'],
+    ['P',         'model',     '90',  'P_MODEL90'],
+    ['T',         'model',     '90',  'T_MODEL90'],
+    ['U',         'model',     '90',  'U_MODEL90'],
+    ['V',         'model',     '90',  'V_MODEL90'],
+    ['W',         'model',     '90',  'W_MODEL90'],
+    ['CLC',       'model',     '90',  'CLC_MODEL90'],
+    ['QV',        'model',     '90',  'QV_MODEL90'],
+    ['TKE',       'model',     '90',  'TKE_MODEL90'],
+    ['T_SO',      'soil',      '0',   'T_SO_L0'], # ?
+    ['W_SO',      'soil',      '0',   'W_SO_SOIL0'],
 ]
 
 [ecmwf_enfo]
 data_dir = '~/data/ecmwf/enfo/orig'
-archive_dir = '~/lib/data/ecmwf/enfo/archive'
+delay_hours = 9
 download_url = 'https://data.ecmwf.int/forecasts/%Y%m%d/%Hz/0p4-beta/enfo/%Y%m%d%H0000-{hour}h-enfo-ef.grib2'
 variables = [
     ['tcwv',      'sfc',       '0',   'TCWV_L0'], # Total column vertically-integrated water
@@ -360,7 +352,7 @@ variables = [
 
 [ecmwf_oper]
 data_dir = '~/data/ecmwf/oper/orig'
-archive_dir = '~/data/ecmwf/oper/archive'
+delay_hours = 8
 download_url = 'https://data.ecmwf.int/forecasts/%Y%m%d/%Hz/0p4-beta/oper/%Y%m%d%H0000-{hour}h-oper-fc.grib2'
 variables = [
     ['tcwv',      'sfc',       '0',   'TCWV_L0'], # Total column vertically-integrated water
