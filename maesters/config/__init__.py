@@ -62,7 +62,7 @@ DWD_ICON = get_model('dwd_icon')
 ECMWF_ENFO = get_model('ecmwf_enfo')
 ECMWF_OPER = get_model('ecmwf_oper')
 
-MODEL = {
+MODELS = {
     'cmc_gem': CMC_GEM,
     'cmc_geps_ens': CMC_GEPS_ENS,
     'dwd_icon': DWD_ICON,

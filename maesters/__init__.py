@@ -1,9 +1,9 @@
-from datetime import datetime
+from datetime import datetime,timedelta
 import os,sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 sys.path.append(os.path.dirname(__file__))
-from config import MODEL,DEFAULT_MAESTER
+from config import MODELS,DEFAULT_MAESTER
 
 import xarray as xr
 
@@ -28,19 +28,21 @@ class Maester:
         self.product = product
         self.datahome = datahome
         self.varname = varname
-        
+        self.model = MODELS.get(f'{self.source}_{self.product}')
+
         if isinstance(date,str):
             date = datetime.strptime(date,'%Y-%m-%d %H:%M')
         
         if hour is None and date:
-            self.batch = date.replace(hour=int(date.hour/12)*12)
+            now = datetime.utcnow().replace(minute=0,second=0,microsecond=0)
+            self.batch = now.replace(hour=int((now-timedelta(hours=self.model.delay_hours)).hour/12)*12)
             if isinstance(date,datetime):
-                self.hour = date - self.batch
+                self.hour = int((date - self.batch).total_seconds()/3600)
             elif isinstance(date,list):
                 self.hour = []
                 for d in date:
                     if isinstance(d,str):d=datetime.strptime(d,'%Y-%m-%d %H:%M')
-                    self.hour.append(d - self.batch)
+                    self.hour.append(int((d - self.batch).total_seconds()/3600))
 
         if isinstance(batch,datetime):
             self.batch = batch
@@ -50,7 +52,7 @@ class Maester:
         for k,v in kwargs.items():
             setattr(self,k,v)
 
-        self.model = MODEL.get(f'{self.source}_{self.product}')
+
         # import model get file dict method
         exec(f"from citadels.{self.source.upper()}.{self.product.lower()} import get_files_dict as get_{source}_{product}_files_dict ;self._get_files_dict = get_{source}_{product}_files_dict")
         for k,v in self.model.variable.items():
@@ -59,11 +61,11 @@ class Maester:
                 self.out = v
                 break
 
-        if isinstance(hour,int):
-            self.download_dict = self._get_files_dict(date=self.batch,hour=hour,var_dict={self.variable:self.out},**kwargs)
+        if isinstance(self.hour,int):
+            self.download_dict = self._get_files_dict(date=self.batch,hour=self.hour,var_dict={self.variable:self.out},**kwargs)
         elif isinstance(hour,list):
             self.download_dict ={}
-            for h in hour:
+            for h in self.hour:
                 d = self._get_files_dict(date=self.batch,hour=h,var_dict={self.variable:self.out},**kwargs)
                 for k,v in d.items():
                     self.download_dict[k] = v

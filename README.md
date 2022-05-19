@@ -1,17 +1,8 @@
 # Maesters of NWP(numercial weather prediction)
 
-- A repository focus on how to fecth open-source global numerical weather prediction product. 
-<<<<<<< HEAD
-  - Deutscher Wetterdientst - ICON GLOBAL
-  - European Centre for Medium-Range Weather Forecasts - OPER / ENFO
-  - Canadian Meteorological Center - GEM / GEPS
+![](pics/usage.png)
 
-## How to install
-```shell
-git clone https://github.com/blizhan/Maesters-of-NWP.git
-cd Maesters-of-NWP
-python setup install
-=======
+- A repository focus on how to fecth open-source global numerical weather prediction product. 
   - Deutscher Wetterdientst - ICON
   - European Centre for Medium-Range Weather Forecasts - OPER / ENFO
   - Canadian Meteorological Center - GEM / GEPS
@@ -45,7 +36,7 @@ ec.xarray()
 # or only download (if lcoal_dir is not given, default download to $HOME/data/{source}/{product}/{date:%Y%m%d%H0000}/)
 ec.download(local_dir='./') 
 ```
-### Probrem
+### Problem
 problem1: pyporj instal fail in M1 chip
 
 ![](pics/p1_desc.png)
@@ -54,5 +45,4 @@ solve1:
 brew install proj
 pip install pyproj
 ```
->>>>>>> test
 
