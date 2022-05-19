@@ -1,57 +1,46 @@
+from glob import glob
 from retrying import retry
 from bs4 import BeautifulSoup
-import pygrib
 from loguru import logger
 from typing import Callable
+import pygrib
 
-from multiprocessing import Pool
-from subprocess import call
-from datetime import datetime
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor,as_completed
+from subprocess import call,check_output
+from datetime import datetime, timedelta
 import requests
 import re
 import os
+import sys
+import shutil
 
 MAESTERS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(MAESTERS)
+from config import ECCC_GEPS_ENS, V, PATH
+sys.path.append(PATH)
+
 logger.add(os.path.join(os.path.dirname(MAESTERS),'log/GEPS_ENS_{time:%Y%m%d}'),rotation='00:00',retention='3 days')
 
-PARALLEL_NUM = 8
+PARALLEL_NUM = 3
 
-PRODUCT = 'raw' # products
-GEPS_ENS_URL = 'https://dd.weather.gc.ca/ensemble/geps/grib2/{PRODUCT}/{batch}/{hour}/'
-
-# FN Example: 'CMC_geps-raw_AFRAIN_SFC_0_latlon0p5x0p5_2022051400_P192_allmbrs.grib2'
-
-VARNAME = {
-    'NTAT':{
-        'DSWRF': 'TSR'
-    },
-    'SFC':{
-        'ACPCP': 'TCP',
-        'APCP': 'TP',
-        'SKINT': 'ST',
-        'DSWRF': 'SSRD',
-        'NSWRS': 'SSR',
-        'TCDC': 'TCC',
-        'RH': 'RHU',
-    },
-    'TGL':{
-        'RH': 'RHU',
-        'UGRD': 'U',
-        'VGRD': 'V',
-    },
-    'ISBL':{
-        'RH': 'RHU',
-        'UGRD': 'U',
-        'VGRD': 'V',
-    }
-}
+# GEPS_ENS_URL: 'https://dd.weather.gc.ca/ensemble/geps/grib2/{PRODUCT}/{batch}/{hour}/'
+# FN EX: 'CMC_geps-raw_AFRAIN_SFC_0_latlon0p5x0p5_2022051400_P192_allmbrs.grib2'
 
 HOURS = {
     'subseason': list(range(3,192,3))+list(range(192,768+6,6)),
     'medium': list(range(3,192,3))+list(range(192,384+6,6))
 }
 
-def get_files_dict(date:datetime,batch:int,hour:int):
+
+def parse_filename(fn,product:str='raw'):
+    prod = 'prob'if product == 'products' else 'raw'
+    parse_pattern = f'CMC_geps-{prod}_([A-Z]+)_([A-Z]+)_([0-9A-Za-z]+)_([0-9A-Za-z]+)_([0-9]+)_P([0-9]+)_*'
+    match = re.match(parse_pattern, fn)
+    if match:
+        return match
+
+
+def get_files_dict(date:datetime,batch:int,hour:int,product:str='raw'):
     """ get GEPS_ENS Files at date/batch/hour
 
     Parameters:
@@ -67,56 +56,25 @@ def get_files_dict(date:datetime,batch:int,hour:int):
     date = date.replace(hour=batch,minute=0,second=0)
     batch = str(batch).zfill(2)
     hour = str(hour).zfill(3)
-    url = GEPS_ENS_URL.format(PRODUCT=PRODUCT,batch=batch,hour=hour)
+    url = ECCC_GEPS_ENS.download_url.format(PRODUCT=product,batch=batch,hour=hour)
+    download_variables_set = ECCC_GEPS_ENS.variable
     resp = requests.get(url)
     res_dict = {}
     if resp.status_code == 200:
         bs_items= BeautifulSoup(resp.text, 'html.parser')
-        prod = 'prob'if PRODUCT == 'products' else 'raw'
-        parse_type = f'CMC_geps-{prod}_([A-Z]+)_([A-Z]+)_([0-9A-Za-z]+)_([0-9A-Za-z]+)_([0-9]+)_P([0-9]+)_*'
         files_list = [i['href'] for i in bs_items.find_all('a', text=re.compile(f'CMC.*{date:%Y%m%d%H}.*.grib2'))]
         for f in files_list:
-            match = re.match(parse_type,f)
+            match = parse_filename(f,product=product)
             if match:
-                if match[2] == 'ISBL':
-                    var = VARNAME[match[2]].get(match[1],match[1])
-                    res_dict[f'{var}_P{int(match[3])}-{match[6]}'] = os.path.join(url,f)
-                elif match[2] in ['SFC','NTAT']:
-                    var = VARNAME[match[2]].get(match[1],match[1])
-                    res_dict[f'{var}_L0-{match[6]}'] = os.path.join(url,f)
-                elif match[2] in ['MSL']:
-                    res_dict[f'{match[1]}_S0-{match[6]}'] = os.path.join(url, f)
-                elif match[2] in ['TGL']:
-                    var = VARNAME[match[2]].get(match[1],match[1])
-                    height = int(match[3] if match[3].isdigit() else match[3][:-1])
-                    if height != 2:
-                        res_dict[f'{var}_M{height}-{match[6]}'] = os.path.join(url,f)
-                    else:
-                        res_dict[f'{var}_L0-{match[6]}'] = os.path.join(url,f)
-                else:
-                    res_dict[f'{match[1]}_{match[2]}{match[3].upper()}-{match[6]}'] = os.path.join(url, f)
-
+                v = V(match[1],match[2],match[3])
+                o = download_variables_set.get(v)
+                if o:
+                    res_dict[f'{o.outname}-{match[6]}'] = os.path.join(url,f)
     return res_dict
 
 
-def verify_grib(local_fp:str)->bool:
-    """ verify local_grib_file all messages complete or not
-
-    Parameters:
-        local_fp: str, local grib filepath
-    return
-        bool, True if complete else False
-    """
-    verify = False
-    try:
-        pygrib.index(local_fp,'shortName')
-        verify = True
-    except:
-        pass
-    return verify
-
 @retry(wait_fixed=10E3, stop_max_attempt_number=3)
-def single_download(download_url:str, local_fp:str,verify:Callable=verify_grib)->int:
+def single_download(download_url:str, local_fp:str,file_type:str='grib')->int:
     """ download single file from download url to local path, and verify
 
     Parameters:
@@ -142,70 +100,191 @@ def single_download(download_url:str, local_fp:str,verify:Callable=verify_grib)-
             f.write(resp.content)
             f.flush()
     except Exception as e:
+        logger.error(download_url)
         logger.error(e)
         raise Exception from e
     finally:
         session.close()
     
-    if verify(tmp):
-        os.rename(tmp,tmp[:-4])
+    if 'grib' in file_type.lower():
+        try:
+            pygrib.index(tmp)
+            os.rename(tmp,tmp[:-4])
+        except Exception as e:
+            os.remove(tmp)
+            logger.error(e)
+            raise Exception from e
+    elif 'nc' in file_type.lower():
+        import xarray as xr
+        try:
+            with xr.open_dataset(tmp):
+                pass
+            os.rename(tmp,tmp[:-4])
+        except Exception as e:
+            os.remove(tmp)
+            logger.error(e)
+            raise Exception from e
     else:
-        os.remove(tmp)
-        raise Exception('grib file not complete')
-    return os.path.getsize(local_fp)
+        try:
+            os.rename(tmp,tmp[:-4])
+        except Exception as e:
+            os.remove(tmp)
+            logger.error(e)
+            raise Exception from e
+    return
 
 def batch_download(url_fp_list:list):
     """ download multiply files from download urls to local path
 
     Parameters:
         url_fp_list: list, [(url, local filepath),...]
+    return:
+        fail: list
     """
-    with Pool(PARALLEL_NUM) as pool:
+    futures = []
+    fail = []
+    with ThreadPoolExecutor(5) as pool:
         for i in url_fp_list:
-            pool.apply(single_download,args=i)
-    pool.join()
+            futures.append(pool.submit(single_download,download_url=i[0],local_fp=i[1]))
+        for n,f in enumerate(as_completed(futures)):
+            try:
+                f.result()
+            except Exception as e:
+                fail.append(url_fp_list[n])
+    return fail
 
-def save_geps_ens(date:datetime,batch:int,local_dir:str):
-    hours = HOURS['subseason'] if date.weekday() and batch == 0 in [1,4] else HOURS['medium']
+
+
+@retry(wait_fixed=10E3, stop_max_attempt_number=3)
+def single_ens_mean(orig_grib_fp:str, out_nc_fp:str,varname:str,split_rule:str=os.path.join(MAESTERS,'static/pf_split')):
+    """ cal the mean of all pf type ensemble from grib and save as nc
+
+    Parameters:
+        orig_grib_fp: str, original grib filepath
+        out_nc_fp: str, output nc filepath
+        varname: str, variable name in output nc file
+        split_rule: str, the rule_file of split grib, default is pertubationNumber split
+    return:
+        out_nc_fp
+    """
+    if os.path.exists(out_nc_fp):
+        return out_nc_fp
+    orig_dir = os.path.dirname(orig_grib_fp)
+    orig_fn = os.path.basename(orig_grib_fp)
+    orig_base_filename = orig_fn.split('.grib')[0] if '.grib' in orig_fn else orig_fn.split('.grb')[0]
+
+    out_dir = os.path.dirname(out_nc_fp)
+    tmp_dir = os.path.join(orig_dir,f'{orig_base_filename}')
+    if os.path.exists(tmp_dir):
+        shutil.rmtree(tmp_dir)
+    os.makedirs(tmp_dir,0o777,exist_ok=True)
+    call(f"grib_filter {split_rule} ../{orig_fn}",shell=True,cwd=tmp_dir)
+    call(f"cdo -s ensmean *-*.pn* temp.grib ",cwd=tmp_dir,shell=True)
+    paraName = check_output(f"cdo showname temp.grib",cwd=tmp_dir,shell=True).decode('utf-8').split('\n')[0][1:]
+    os.makedirs(out_dir,0o777,exist_ok=True)
+    call(f"cdo -f nc -chname,{paraName},{varname} temp.grib {out_nc_fp}",cwd=tmp_dir,shell=True)
+    shutil.rmtree(tmp_dir)
+    return out_nc_fp
+
+
+def batch_ens_mean(in_out_var_list:list,split_rule:str=os.path.join(MAESTERS,'static/pf_split'))->list:
+    """ batch cal ens mean 
+
+    Parameters:
+        in_out_var_list: list, [(orig_grib_fp, out_nc_fp, varname), ...,]
+        split_rule: str, grib_filter split rule_file
+    return:
+        list, fail list
+    """
+    results = []
+    fail = []
+    with ProcessPoolExecutor(max_workers=PARALLEL_NUM) as pool:
+        for value in in_out_var_list:
+            results.append(pool.submit(single_ens_mean,orig_grib_fp=value[0],out_nc_fp=value[1],varname=value[2],split_rule=split_rule))
+        for n,r in enumerate(results):
+            try:
+                r.result()
+            except Exception as e:
+                logger.error(in_out_var_list[n])
+                logger.error(e)
+                fail.append(in_out_var_list[n])
+    return fail
+
+
+def save_geps_ens(date:datetime,batch:int,local_dir:str,product='raw'):
+    """ save all geps_ens batch files at date in directory
+
+    Parameters:
+        date: datetime, UTC
+        batch: int, batch hour, 0/12
+        local_dir: str, save dir
+        product: str, geps_ens product, 'raw'/'products'
+    return:
+        -1 if some fail
+        0 if all success
+    """
+    logger.info(f'GEPS_ENS {date:%Y%m%d}{str(batch).zfill(2)} download start')
+    hours = HOURS['subseason'] if date.weekday() in [3] and batch == 0  else HOURS['medium']
     retry_flag = False
-    for hour in hours:
-        urls = get_files_dict(date, batch,hour)
-        # url_fp_list = [(v,os.path.join(local_dir,os.path.basename(v))) for k,v in urls.items()]
-        url_fp_list = [(v,os.path.join(local_dir,f'{k}.grib2')) for k,v in urls.items()]
-        try:
-            batch_download(url_fp_list)
-            logger.info(f'GEPS_ENS [DATE: {date:%Y%m%d} BATCH: {str(batch).zfill(2)} HOUR: {hour}] FINISH')
-        except:
-            retry_flag = True
+    results = []
+    fail = []
+    with ProcessPoolExecutor(max_workers=PARALLEL_NUM) as pool:
+        for hour in hours[:]:
+            urls = get_files_dict(date, batch, hour, product=product)
+            url_fp_list = [(v,os.path.join(local_dir,os.path.basename(v))) for k,v in urls.items()]
+            # url_fp_list = [(v,os.path.join(local_dir,f'{k}.grib2')) for k,v in urls.items()]
+            results.append(pool.submit(batch_download,url_fp_list=url_fp_list))
+        for n,r in enumerate(results):
+            res = r.result()
+            if res:
+                fail.extend(res)
+            else:
+                logger.info(f'GEPS_ENS: [DATE: {date:%Y%m%d} BATCH: {str(batch).zfill(2)} HOUR: {hours[n]}] DOWNLOAD FINISH')
 
-    if retry_flag:
+    fail = batch_download(fail)
+    if fail:
+        logger.error('the following download fail')
+        logger.error(fail)
         return -1
+    else:
+        logger.info(f'GEPS_ENS: [DATE: {date:%Y%m%d} BATCH: {str(batch).zfill(2)}] ALL DOWNLOAD FINISH')
+        return 0
+
+
+def geps_ens_mean(grib_dir:str,out_dir:str,split_rule:str=os.path.join(MAESTERS,'static/pf_split')):
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir,0o777,exist_ok=True)
+    files = glob(os.path.join(grib_dir,'CMC*.grib*'))
+    fns = [os.path.basename(f) for f in files]
+    matches = [parse_filename(fn) for fn in fns]
+    in_out_var_list = []
+    for n,m in enumerate(matches):
+        if m:
+            v = V(m[1],m[2],m[3])
+            o = ECCC_GEPS_ENS.variable.get(v)
+            if o:
+                t = (files[n],os.path.join(out_dir,f'{o.outname}-{m[6]}.nc'),o.outname)
+                in_out_var_list.append(t)
+    fail = batch_ens_mean(in_out_var_list,split_rule)
+    
+    fail = batch_ens_mean(fail,split_rule)
+    if fail:
+        logger.error('the following cal ens-mean fail')
+        logger.error(fail)
+        return -1
+    else:
+        logger.info(f'GEPS_ENS: ALL ENS_MEAN CALC FINISH')
+        return 0
+
 
 def daily_geps_ens():
-    now = datetime.utcnow()
-    batch = int((now.hour-7)/12)*12
-    HOME = os.environ.get('HOME')
-    local_dir = os.environ.get('GEPS_ENS_DIR',now.strftime(f'{HOME}/Downloads/GEPS_ENS/%Y%m%d{str(batch).zfill(2)}00'))
-    save_geps_ens(now,batch,local_dir)
+    now = datetime.utcnow() - timedelta(hours=6)
+    batch = int(now.hour/12)*12
+    orig_dir = now.strftime(os.path.join(ECCC_GEPS_ENS.data_dir, f'%Y%m%d{str(batch).zfill(2)}0000'))
+    archive_dir = now.strftime(os.path.join(ECCC_GEPS_ENS.archive_dir, f'%Y%m%d{str(batch).zfill(2)}0000'))
+    save_geps_ens(now,batch,orig_dir,'raw')
+    geps_ens_mean(orig_dir,archive_dir)
 
-
-
-def preprocess_single_file(local_fp:str):
-    # TODO
-    # call(f"cdo -f nc copy {local_fp} {local_fp.replace('.grib2','.nc')}",shell=True)
-    # call(f"grib_filter ")
-    # fn = os.path.basename(local_fp)
-    # pattern = '([A-Z]+)_([A-Za-z0-9]+)-([0-9]+).grib2'
-    # match = re.match(pattern,fn)
-    # var = fn.split('.grib2')[0].split('_')[0]
-    return
-
-def test():
-    text = get_files_dict(datetime(2022,5,16),0,3)
-    key = 'WIND_M10-003'
-    single_download(text[key],f'/Users/blizhan/Downloads/{key}.grib2')
-    preprocess_single_file(f'/Users/blizhan/Downloads/{key}.grib2')
-    print(text)
 
 if __name__ == "__main__":
     daily_geps_ens()

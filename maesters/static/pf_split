@@ -1,0 +1,3 @@
+if( ! ( dataType is 'cf' ) && endStep != 0 ) {
+    write "temp-[endStep].pn[perturbationNumber]";
+}
