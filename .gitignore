@@ -4,4 +4,4 @@ log/*
 */__pycache__
 __pycache__
 */.ipynb_checkpoints
-maesters/static/dwd/weights_icogl2world_0125.nc
+maesters/*/*/*.nc
