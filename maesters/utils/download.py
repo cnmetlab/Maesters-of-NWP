@@ -1,9 +1,9 @@
-from typing import Callable
 from retrying import retry
 import requests
 import pygrib
 from loguru import logger
 
+from typing import Callable
 import http.cookiejar
 import http.client
 import urllib

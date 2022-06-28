@@ -1,10 +1,3 @@
-from glob import glob
-from retrying import retry
-from bs4 import BeautifulSoup
-from loguru import logger
-from typing import Callable
-import pygrib
-
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor,as_completed
 from subprocess import call,check_output
 from datetime import datetime, timedelta
@@ -13,6 +6,12 @@ import re
 import os
 import sys
 import shutil
+
+from glob import glob
+from retrying import retry
+from bs4 import BeautifulSoup
+from loguru import logger
+import pygrib
 
 MAESTERS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(MAESTERS)
