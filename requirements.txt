@@ -6,3 +6,4 @@ xarray
 requests
 loguru
 toml
+dask
