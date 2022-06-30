@@ -1,6 +1,6 @@
 # Maesters of NWP(numercial weather prediction)
 
-![](pics/usage.png)
+![](https://raw.githubusercontent.com/blizhan/Maesters-of-NWP/main/pics/usage.png)
 
 - A repository focus on how to fecth open-source global numerical weather prediction product. 
   - Deutscher Wetterdientst - ICON
@@ -39,7 +39,7 @@ ec.download(local_dir='./')
 ### Problem
 problem1: pyporj instal fail in M1 chip
 
-![](pics/p1_desc.png)
+![](https://raw.githubusercontent.com/blizhan/Maesters-of-NWP/main/pics/p1_desc.png)
 solve1: 
 ```shell
 brew install proj
