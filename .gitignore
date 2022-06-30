@@ -1,0 +1,11 @@
+log/*
+.vscode
+*/*/*/__pycache__/*
+*/*/__pycache__/*
+*/__pycache__/*
+__pycache__/*
+*/.ipynb_checkpoints
+.DS_Store
+dist/
+build/
+maesters_nwp.egg-info

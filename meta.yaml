@@ -1,0 +1,29 @@
+package:
+  name: maesters-nwp
+  version: 0.0.2
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - conda
+  run:
+    - python >=3.8
+    - retrying
+    - beautifulsoup4
+    - pygrib
+    - netCDF4
+    - xarray
+    - requests
+    - loguru
+    - toml
+    - dask
+    - numpy
+  
+about:
+  summary: A package to get Open NWP data in a elegant way.
+  home: https://github.com/blizhan/Maesters-of-NWP
+  license: MIT
