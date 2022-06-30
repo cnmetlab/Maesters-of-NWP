@@ -61,7 +61,7 @@ def after_download(local_fp:str, file_type:str,rename_fp:str=None):
 
     if 'grib' in file_type.lower():
         try:
-            pygrib.index(local_fp)
+            pygrib.index(local_fp,'shortName')
             if rename_fp:
                 # os.rename(local_fp,rename_fp)
                 shutil.move(local_fp,rename_fp)

@@ -19,6 +19,7 @@ class Maester:
         varname:str = DEFAULT_MAESTER.get('varname'),
         hour: int = DEFAULT_MAESTER.get('hour'),
         **kwargs,
+        # data_type: data type for ENS prediction like enfo or geps, 'cf'/'pf1'/'pf2'/.../
         ) -> None:
 
         self.source = source
@@ -51,6 +52,7 @@ class Maester:
     
 
     def download(self,local_dir:str=None):
+        # import model download method
         exec(f"from citadels.{self.source.upper()}.{self.product.lower()} import download;self._download = download")
         self.local_fp = []
         res = []
@@ -63,7 +65,12 @@ class Maester:
                 self.local_fp.append(local_fp)
             for r in as_completed(res):
                 r.result()
-                
+    
+    def operation(self,local_dir:str=None):
+        # import model operation method
+        exec(f"from citadels.{self.source.upper()}.{self.product.lower()} import operation;self._operation = operation")
+        self.operation(local_dir)
+
     
     def xarray(self):
         if hasattr(self,'local_fp'):

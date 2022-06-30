@@ -114,13 +114,14 @@ def batch_tri_transform(in_out_var_list:list,grid_text:str=os.path.join(MAESTERS
 
 
 @retry(wait_fixed=10E3, stop_max_attempt_number=3,stop_max_delay=10*10E3)
-def single_ens_mean(orig_grib_fp:str, out_nc_fp:str,varname:str,split_rule:str=os.path.join(MAESTERS,'static/pf_split')):
-    """ cal the mean of all pf type ensemble from grib and save as nc
+def single_ens_stats(orig_grib_fp:str, out_nc_fp:str,varname:str,stats:str,split_rule:str=os.path.join(MAESTERS,'static/pf_split')):
+    """ cal the ens method of all pf type ensemble from grib and save as nc
 
     Parameters:
         orig_grib_fp: str, original grib filepath
         out_nc_fp: str, output nc filepath
         varname: str, variable name in output nc file
+        stats: str, ens method like 'ensmean'/'ensmax'/'ensmin'/'ensstd'/'ensstd1'/'enssum'/'ensvar'/'ensvar1'/'ensskew'/'enspctl'/'ensmedian'/'enskurt'/'ensrange'
         split_rule: str, the rule_file of split grib, default is pertubationNumber split
     return:
         out_nc_fp
@@ -137,13 +138,50 @@ def single_ens_mean(orig_grib_fp:str, out_nc_fp:str,varname:str,split_rule:str=o
         shutil.rmtree(tmp_dir)
     os.makedirs(tmp_dir,0o777,exist_ok=True)
     call(f"{os.path.join(PATH,'grib_filter')} {split_rule} ../{orig_fn}",shell=True,cwd=tmp_dir)
-    call(f"{os.path.join(PATH,'cdo')} -s ensmean *-*.pn* temp.grib ",cwd=tmp_dir,shell=True)
-    paraName = check_output(f"{os.path.join(PATH,'cdo')} showname temp.grib",cwd=tmp_dir,shell=True).decode('utf-8').split('\n')[0][1:]
+    call(f"{os.path.join(PATH,'cdo')} -s {stats} *-*.pn* temp.grib ",cwd=tmp_dir,shell=True)
     os.makedirs(out_dir,0o777,exist_ok=True)
-    call(f"{os.path.join(PATH,'cdo')} -f nc -chname,{paraName},{varname} temp.grib {out_nc_fp}",cwd=tmp_dir,shell=True)
+    call(f"{os.path.join(PATH,'cdo')} showname temp.grib | xargs -I {'{}'} {os.path.join(PATH,'cdo')} -f nc -chname,{'{}'},{varname} temp.grib {out_nc_fp}",cwd=tmp_dir,shell=True)
     shutil.rmtree(tmp_dir)
     return out_nc_fp
 
+
+@retry(wait_fixed=10E3, stop_max_attempt_number=3,stop_max_delay=10*10E3)
+def single_ens_mean(orig_grib_fp:str, out_nc_fp:str,varname:str,split_rule:str=os.path.join(MAESTERS,'static/pf_split')):
+    """ cal the mean of all pf type ensemble from grib and save as nc
+
+    Parameters:
+        orig_grib_fp: str, original grib filepath
+        out_nc_fp: str, output nc filepath
+        varname: str, variable name in output nc file
+        split_rule: str, the rule_file of split grib, default is pertubationNumber split
+    return:
+        out_nc_fp
+    """
+    return single_ens_stats(orig_grib_fp,out_nc_fp,varname,'ensmean',split_rule)
+
+def batch_ens_stats(in_out_var_list:list,stats:str,split_rule:str=os.path.join(MAESTERS,'static/pf_split'))->list:
+    """ batch cal ens stats 
+
+    Parameters:
+        in_out_var_list: list, [(orig_grib_fp, out_nc_fp, varname), ...,]
+        stats: str, ens method like 'ensmean'/'ensmax'/'ensmin'/'ensstd'/'ensstd1'/'enssum'/'ensvar'/'ensvar1'/'ensskew'/'enspctl'/'ensmedian'/'enskurt'/'ensrange'
+        split_rule: str, grib_filter split rule_file
+    return:
+        list, fail list
+    """
+    results = []
+    fail = []
+    with ProcessPoolExecutor(max_workers=PARALLEL_NUM) as pool:
+        for value in in_out_var_list:
+            results.append(pool.submit(single_ens_stats,orig_grib_fp=value[0],out_nc_fp=value[1],varname=value[2],stats=stats,split_rule=split_rule))
+        for n,r in enumerate(as_completed(results)):
+            try:
+                r.result()
+            except Exception as e:
+                logger.error(in_out_var_list[n])
+                logger.error(e)
+                fail.append(in_out_var_list[n])
+    return fail
 
 def batch_ens_mean(in_out_var_list:list,split_rule:str=os.path.join(MAESTERS,'static/pf_split'))->list:
     """ batch cal ens mean 
@@ -154,16 +192,27 @@ def batch_ens_mean(in_out_var_list:list,split_rule:str=os.path.join(MAESTERS,'st
     return:
         list, fail list
     """
-    results = []
-    fail = []
-    with ProcessPoolExecutor(max_workers=PARALLEL_NUM) as pool:
-        for value in in_out_var_list:
-            results.append(pool.submit(single_ens_mean,orig_grib_fp=value[0],out_nc_fp=value[1],varname=value[2],split_rule=split_rule))
-        for n,r in enumerate(as_completed(results)):
-            try:
-                r.result()
-            except Exception as e:
-                logger.error(in_out_var_list[n])
-                logger.error(e)
-                fail.append(in_out_var_list[n])
-    return fail
+    return batch_ens_stats(in_out_var_list,'ensmean',split_rule=split_rule)
+
+# def batch_ens_mean(in_out_var_list:list,split_rule:str=os.path.join(MAESTERS,'static/pf_split'))->list:
+#     """ batch cal ens mean 
+
+#     Parameters:
+#         in_out_var_list: list, [(orig_grib_fp, out_nc_fp, varname), ...,]
+#         split_rule: str, grib_filter split rule_file
+#     return:
+#         list, fail list
+#     """
+#     results = []
+#     fail = []
+#     with ProcessPoolExecutor(max_workers=PARALLEL_NUM) as pool:
+#         for value in in_out_var_list:
+#             results.append(pool.submit(single_ens_mean,orig_grib_fp=value[0],out_nc_fp=value[1],varname=value[2],split_rule=split_rule))
+#         for n,r in enumerate(as_completed(results)):
+#             try:
+#                 r.result()
+#             except Exception as e:
+#                 logger.error(in_out_var_list[n])
+#                 logger.error(e)
+#                 fail.append(in_out_var_list[n])
+#     return fail

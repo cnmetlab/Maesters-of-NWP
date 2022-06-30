@@ -1,4 +1,5 @@
 from glob import glob
+import shutil
 import requests
 from datetime import datetime,timedelta
 import json
@@ -91,7 +92,12 @@ def get_files_dict(date:datetime, hour:int,var_dict=ECMWF_ENFO.variable,data_typ
 
     # filter only cf
     try:
+        if 'pf' in data_type:
+            pfnum = ''.join(data_type.split('pf')[1:])
+            data_type = 'pf'
         df = df[df['type']==data_type]
+        if data_type == 'pf' and len(pfnum):
+            df = df[df['number']==pfnum]
         df.loc[:,'fn'] = df.apply(lambda x:var_dict.get(V(x['param'],x['levtype'],str(x['levelist']))).outname if var_dict.get(V(x['param'],x['levtype'],str(x['levelist']))) else np.nan,axis=1)
         res = df.dropna(axis=0,subset=['fn'])
         res.loc[:,'fn'] = res['fn'].apply(lambda x: f'{x}-{str(hour).zfill(3)}')
@@ -100,7 +106,6 @@ def get_files_dict(date:datetime, hour:int,var_dict=ECMWF_ENFO.variable,data_typ
     except Exception as e:
         logger.error(e)
         return {}
-
 
 def get_all_files_list(dt:datetime)->dict:
     result = []
@@ -166,19 +171,18 @@ def convert_ecmwf_enfo(grib_dir:str,out_dir:str):
         return 0
 
 @retry(stop_max_delay=3*60*60*10E3,stop_max_attempt_number=1)
-def daily_ecmwf_enfo(data_dir:str=None):
+def operation(data_dir:str=None):
     now = datetime.utcnow() - timedelta(hours=9)
-    batch = int(now.hour/12)*12
-    data_dir = ECMWF_ENFO.data_dir if data_dir is None else data_dir
-    archive_dir = ECMWF_ENFO.archive_dir if data_dir is None else data_dir
-    orig_dir = now.strftime(os.path.join(data_dir, f'%Y%m%d{str(batch).zfill(2)}0000'))
-    archive_dir = now.strftime(os.path.join(archive_dir, f'%Y%m%d{str(batch).zfill(2)}0000'))
-    save_ecmwf_enfo(now.replace(hour=batch),orig_dir)
-    convert_ecmwf_enfo(orig_dir,archive_dir)
+    batch = int(now.hour/12)*12    
+    tmp_dir = now.strftime(os.path.join(ECMWF_ENFO.data_dir+'_tmp', f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir+'_tmp'
+    data_dir = now.strftime(os.path.join(ECMWF_ENFO.data_dir, f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir
+    save_ecmwf_enfo(now.replace(hour=batch),tmp_dir)
+    convert_ecmwf_enfo(tmp_dir,data_dir)
+    shutil.rmtree(tmp_dir)
 
 
 if __name__ == '__main__':
     if len(sys.argv)<= 1:
-        daily_ecmwf_enfo()
+        operation()
     else:
-        daily_ecmwf_enfo(sys.argv[1])
+        operation(sys.argv[1])

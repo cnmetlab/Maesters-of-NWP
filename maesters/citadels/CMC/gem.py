@@ -1,3 +1,4 @@
+import shutil
 from retrying import retry
 from bs4 import BeautifulSoup
 from loguru import logger
@@ -130,21 +131,18 @@ def convert_cmc_gem(grib_dir:str,out_dir:str):
         return 0
 
 
-
 @retry(stop_max_delay=3*60*60*10E3,stop_max_attempt_number=1)
-def daily_cmc_gem(data_dir:str=None):
+def operation(data_dir:str=None):
     now = datetime.utcnow() - timedelta(hours=6)
     batch = int(now.hour/12)*12
-    data_dir = CMC_GEM.data_dir if data_dir is None else data_dir
-    archive_dir = CMC_GEM.archive_dir if data_dir is None else data_dir
-    orig_dir = now.strftime(os.path.join(data_dir, f'%Y%m%d{str(batch).zfill(2)}0000'))
-    archive_dir = now.strftime(os.path.join(archive_dir, f'%Y%m%d{str(batch).zfill(2)}0000'))
-    save_cmc_gem(now.replace(hour=batch),orig_dir)
-    convert_cmc_gem(orig_dir,archive_dir)
-
+    tmp_dir = now.strftime(os.path.join(CMC_GEM.data_dir+'_tmp', f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir+'_tmp'
+    data_dir = now.strftime(os.path.join(CMC_GEM.data_dir, f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir
+    save_cmc_gem(now.replace(hour=batch),tmp_dir)
+    convert_cmc_gem(tmp_dir,data_dir)
+    shutil.rmtree(tmp_dir)
 
 if __name__ == "__main__":
     if len(sys.argv)<=1:
-        daily_cmc_gem()
+        operation()
     else:
-        daily_cmc_gem(sys.argv[1])
+        operation(sys.argv[1])

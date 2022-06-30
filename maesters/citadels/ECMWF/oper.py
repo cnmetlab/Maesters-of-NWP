@@ -1,4 +1,5 @@
 from glob import glob
+import shutil
 import requests
 from datetime import datetime,timedelta
 import json
@@ -165,19 +166,18 @@ def convert_ecmwf_oper(grib_dir:str,out_dir:str):
         return 0
 
 @retry(stop_max_delay=3*60*60*10E3,stop_max_attempt_number=1)
-def daily_ecmwf_oper(data_dir:str=None):
+def operation(data_dir:str=None):
     now = datetime.utcnow() - timedelta(hours=9)
     batch = int(now.hour/12)*12
-    data_dir = ECMWF_OPER.data_dir if data_dir is None else data_dir
-    archive_dir = ECMWF_OPER.archive_dir if data_dir is None else data_dir
-    orig_dir = now.strftime(os.path.join(data_dir, f'%Y%m%d{str(batch).zfill(2)}0000'))
-    archive_dir = now.strftime(os.path.join(archive_dir, f'%Y%m%d{str(batch).zfill(2)}0000'))
-    save_ecmwf_oper(now.replace(hour=batch),orig_dir)
-    convert_ecmwf_oper(orig_dir,archive_dir)
+    tmp_dir = now.strftime(os.path.join(ECMWF_OPER.data_dir+'_tmp', f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir+'_tmp'
+    data_dir = now.strftime(os.path.join(ECMWF_OPER.data_dir, f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir
+    save_ecmwf_oper(now.replace(hour=batch),tmp_dir)
+    convert_ecmwf_oper(tmp_dir,data_dir)
+    shutil.rmtree(tmp_dir)
 
 
 if __name__ == '__main__':
     if len(sys.argv)<= 1:
-        daily_ecmwf_oper()
+        operation()
     else:
-        daily_ecmwf_oper(sys.argv[1])
+        operation(sys.argv[1])

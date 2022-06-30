@@ -1,7 +1,9 @@
 
 # from retrying import retry
+import shutil
 from bs4 import BeautifulSoup
 from loguru import logger
+from retrying import retry
 
 from glob import glob
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor,as_completed
@@ -170,20 +172,20 @@ def dwd_transform(grib_dir:str,out_dir:str,grid_text:str=os.path.join(MAESTERS,'
         logger.info(f'DWD_ICON: ALL TRI-TRANSFORM FINISH')
         return 0
 
-def daily_dwd_icon(data_dir:str=None):
+@retry(stop_max_delay=3*60*60*10E3,stop_max_attempt_number=1)
+def operation(data_dir:str=None):
     now = datetime.utcnow() - timedelta(hours=4)
     batch = int(now.hour/12)*12
-    data_dir = DWD_ICON.data_dir if data_dir is None else data_dir
-    archive_dir = DWD_ICON.archive_dir if data_dir is None else data_dir
-    orig_dir = now.strftime(os.path.join(data_dir, f'%Y%m%d{str(batch).zfill(2)}0000'))
-    archive_dir = now.strftime(os.path.join(archive_dir, f'%Y%m%d{str(batch).zfill(2)}0000'))
-    save_dwd_icon(now.replace(hour=batch),orig_dir)
-    dwd_transform(orig_dir,archive_dir)
+    tmp_dir = now.strftime(os.path.join(DWD_ICON.data_dir+'_tmp', f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir+'_tmp'
+    data_dir = now.strftime(os.path.join(DWD_ICON.data_dir, f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir
+    save_dwd_icon(now.replace(hour=batch),tmp_dir)
+    dwd_transform(tmp_dir,data_dir)
+    shutil.rmtree(tmp_dir)
 
 
 if __name__ == "__main__":
     if len(sys.argv)<=1:
-        daily_dwd_icon()
+        operation()
     else:
-        daily_dwd_icon(sys.argv[1])
+        operation(sys.argv[1])
     print()

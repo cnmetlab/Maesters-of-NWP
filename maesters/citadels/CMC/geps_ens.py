@@ -1,4 +1,5 @@
 from glob import glob
+import shutil
 from retrying import retry
 from bs4 import BeautifulSoup
 from loguru import logger
@@ -11,13 +12,15 @@ import requests
 import re
 import os
 import sys
+
+from maesters.utils.post_process import batch_ens_stats
 # import shutil
 
 MAESTERS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(MAESTERS)
 from config import CMC_GEPS_ENS, V
 from utils.download import batch_session_download,single_session_download
-from utils.post_process import batch_ens_mean,single_ens_mean
+from utils.post_process import batch_ens_mean,single_ens_mean,single_ens_stats
 
 logger.add(os.path.join(os.path.dirname(MAESTERS),'log/GEPS_ENS_{time:%Y%m%d}'),rotation='00:00',retention=10)
 
@@ -74,10 +77,12 @@ def get_files_dict(date:datetime,hour:int,var_dict:dict=CMC_GEPS_ENS.variable,da
 
 def download(**kwargs):
     single_session_download(download_url=kwargs['url'],local_fp=kwargs['local_fp'].replace('.nc','.grib2'))
-    single_ens_mean(kwargs['local_fp'].replace('.nc','.grib2'),kwargs['local_fp'],os.path.basename(kwargs['local_fp']).split('-')[0])
+    if kwargs.get('stats') is None:
+        single_ens_mean(kwargs['local_fp'].replace('.nc','.grib2'),kwargs['local_fp'],os.path.basename(kwargs['local_fp']).split('-')[0])
+    else:
+        single_ens_stats(kwargs['local_fp'].replace('.nc','.grib2'),kwargs['local_fp'],os.path.basename(kwargs['local_fp']).split('-')[0],kwargs.get('stats'))
     os.remove(kwargs['local_fp'].replace('.nc','.grib2'))
     return os.path.getsize(kwargs['local_fp'])
-
 
 
 def save_geps_ens(date:datetime,local_dir:str,product='raw'):
@@ -120,7 +125,7 @@ def save_geps_ens(date:datetime,local_dir:str,product='raw'):
         return 0
 
 
-def cal_geps_ens_mean(grib_dir:str,out_dir:str,split_rule:str=os.path.join(MAESTERS,'static/pf_split')):
+def cal_geps_ens_stats(grib_dir:str,out_dir:str,stats:str,split_rule:str=os.path.join(MAESTERS,'static/pf_split')):
     if not os.path.exists(out_dir):
         os.makedirs(out_dir,0o777,exist_ok=True)
     files = glob(os.path.join(grib_dir,'*.grib*'))
@@ -134,32 +139,35 @@ def cal_geps_ens_mean(grib_dir:str,out_dir:str,split_rule:str=os.path.join(MAEST
             if o:
                 t = (files[n],os.path.join(out_dir,f'{o.outname}-{m[6]}.nc'),o.outname)
                 in_out_var_list.append(t)
-    fail = batch_ens_mean(in_out_var_list,split_rule)
+    fail = batch_ens_stats(in_out_var_list,stats,split_rule)
     
-    fail = batch_ens_mean(fail,split_rule)
+    fail = batch_ens_stats(fail,stats,split_rule)
     if fail:
-        logger.error('the following cal ens-mean fail')
+        logger.error(f'the following cal {stats} fail')
         logger.error(fail)
         return -1
     else:
-        logger.info(f'GEPS_ENS: ALL ENS_MEAN CALC FINISH')
+        logger.info(f'GEPS_ENS: ALL {stats.upper()} CALC FINISH')
         return 0
 
 
+def cal_geps_ens_mean(grib_dir:str,out_dir:str,split_rule:str=os.path.join(MAESTERS,'static/pf_split')):
+    return cal_geps_ens_stats(grib_dir,out_dir,'ensmean',split_rule)
+
+
 @retry(stop_max_delay=3*60*60*10E3,stop_max_attempt_number=1)
-def daily_geps_ens(data_dir:str=None):
+def operation(data_dir:str=None):
     now = datetime.utcnow() - timedelta(hours=6)
     batch = int(now.hour/12)*12
-    data_dir = CMC_GEPS_ENS.data_dir if data_dir is None else data_dir
-    archive_dir = CMC_GEPS_ENS.archive_dir if data_dir is None else data_dir
-    orig_dir = now.strftime(os.path.join(data_dir, f'%Y%m%d{str(batch).zfill(2)}0000'))
-    archive_dir = now.strftime(os.path.join(archive_dir, f'%Y%m%d{str(batch).zfill(2)}0000'))
-    save_geps_ens(now.replace(hour=batch),orig_dir)
-    cal_geps_ens_mean(orig_dir,archive_dir)
+    tmp_dir = now.strftime(os.path.join(CMC_GEPS_ENS.data_dir+'_tmp', f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir+'_tmp'
+    data_dir = now.strftime(os.path.join(CMC_GEPS_ENS.data_dir, f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir
+    save_geps_ens(now.replace(hour=batch),tmp_dir)
+    cal_geps_ens_mean(tmp_dir,data_dir)
+    shutil.rmtree(tmp_dir)
 
 
 if __name__ == "__main__":
     if len(sys.argv)<=1:
-        daily_geps_ens()
+        operation()
     else:
-        daily_geps_ens(sys.argv[1])
+        operation(sys.argv[1])
