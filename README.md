@@ -9,11 +9,15 @@ A package focus on fecth open-source global numerical weather prediction product
 The following data sources are supported.
   
   ✔︎ _Deutscher Wetterdientst_ - **ICON**
+
   ✔︎ _European Centre for Medium-Range Weather Forecasts_ - **OPER** / **ENFO**
+
   ✔︎ _Canadian Meteorological Center_ - **GEM** / **GEPS**
 
 The following data sources support is coming. 🚀🚀🚀
+
   ❏ _National Oceanic and Atmospheric Adminstration_ - GFS
+  
   ❏ _Met Office_ - MOGREPS
 
 
