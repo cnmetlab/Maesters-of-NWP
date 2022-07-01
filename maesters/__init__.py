@@ -71,7 +71,7 @@ class Maester:
                     self.download_dict[k] = v
     
 
-    def download(self,local_dir:str=None):
+    def download(self,local_dir:str='./'):
         # import model download method
         exec(f"from citadels.{self.source.upper()}.{self.product.lower()} import download;self._download = download")
         self.local_fp = []

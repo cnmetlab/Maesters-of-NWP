@@ -5,15 +5,16 @@
 
 A package focus on fecth open-source global numerical weather prediction product in a elegant way. 
 
+
 The following data sources are supported.
   
-  ✔︎ Deutscher Wetterdientst - ICON
-  ✔︎ European Centre for Medium-Range Weather Forecasts - OPER / ENFO
-  ✔︎ Canadian Meteorological Center - GEM / GEPS
+  ✔︎ _Deutscher Wetterdientst_ - **ICON**
+  ✔︎ _European Centre for Medium-Range Weather Forecasts_ - **OPER** / **ENFO**
+  ✔︎ _Canadian Meteorological Center_ - **GEM** / **GEPS**
 
-The following data sources support are undergoing!
-  ❏ National Oceanic and Atmospheric Adminstration - GFS
-  ❏ Met Office - MOGREPS
+The following data sources support is coming. 🚀🚀🚀
+  ❏ _National Oceanic and Atmospheric Adminstration_ - GFS
+  ❏ _Met Office_ - MOGREPS
 
 
 
@@ -39,14 +40,15 @@ ec = Maester('ecmwf','oper','2022-06-29 12:00',hour=[6,30],varname='TP_L0')
 # get xarray object
 ec.xarray()
 
-# or only download (if lcoal_dir is not given, default download to $HOME/data/{source}/{product}/{date:%Y%m%d%H0000}/)
+# or only download (if lcoal_dir is not given, default download to current dir)
 ec.download(local_dir='./') 
+
 ```
 ### Problem List
-problem1: pyporj instal fail on M1 chip
+_<font color=#008000 >P1: </font>_ _pyporj instal fail on M1 chip_
 
 ![](https://raw.githubusercontent.com/blizhan/Maesters-of-NWP/main/pics/p1_desc.png)
-solve1: 
+_<font color=#008000 >S1: </font>_ 
 ```shell
 brew install proj
 pip install pyproj
