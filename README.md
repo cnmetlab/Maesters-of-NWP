@@ -1,4 +1,4 @@
-# Maesters - Nnumercial Weather Prediction
+# Maesters - Numercial Weather Prediction
 ![](https://badgen.net/pypi/v/maesters-nwp) ![](https://badgen.net/badge/license/MIT/pink) ![](https://badgen.net/badge/github/blizhan/purple?icon=github) ![](https://badgen.net/https/cal-badge-icd0onfvrxx6.runkit.sh/Asia/Shanghai)
 
 ![](https://raw.githubusercontent.com/blizhan/Maesters-of-NWP/main/pics/usage.png)
@@ -17,7 +17,7 @@ The following data sources are supported.
 The following data sources support is coming. 🚀🚀🚀
 
   ❏ _National Oceanic and Atmospheric Adminstration_ - GFS
-  
+
   ❏ _Met Office_ - MOGREPS
 
 
