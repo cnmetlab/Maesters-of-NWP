@@ -19,7 +19,7 @@ warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
 
 MAESTERS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(MAESTERS)
-from config import ECMWF_OPER, V # , PATH
+from config import get_model, V # , PATH
 from utils import batch_range_download,single_range_download
 from utils.post_process import batch_convert_nc,single_convert_nc
 
@@ -29,6 +29,7 @@ logger.add(os.path.join(os.path.dirname(MAESTERS),'log/ECMWF_OPER_{time:%Y%m%d}'
 
 PARALLEL_NUM = 5
 
+ECMWF_OPER = get_model('ecmwf','oper')
 HOURS = {
     'medium': list(range(0,144,3))+list(range(144,240+6,6)),
 }
@@ -169,11 +170,13 @@ def convert_ecmwf_oper(grib_dir:str,out_dir:str):
 def operation(data_dir:str=None):
     now = datetime.utcnow() - timedelta(hours=9)
     batch = int(now.hour/12)*12
-    tmp_dir = now.strftime(os.path.join(ECMWF_OPER.data_dir+'_tmp', f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir+'_tmp'
-    data_dir = now.strftime(os.path.join(ECMWF_OPER.data_dir, f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir
+    tmp_dir = now.strftime(os.path.join(ECMWF_OPER.data_dir.replace('~',os.environ.get('HOME'))+'_tmp',\
+        f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir+'_tmp'
+    data_dir = now.strftime(os.path.join(ECMWF_OPER.data_dir.replace('~',os.environ.get('HOME')), \
+        f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir
     save_ecmwf_oper(now.replace(hour=batch),tmp_dir)
     convert_ecmwf_oper(tmp_dir,data_dir)
-    shutil.rmtree(tmp_dir)
+    shutil.rmtree(tmp_dir,ignore_errors=True)
 
 
 if __name__ == '__main__':

@@ -16,7 +16,7 @@ import sys
 
 MAESTERS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(MAESTERS)
-from config import CMC_GEM, V
+from config import V,get_model
 from utils.download import batch_session_download,single_session_download
 from utils.post_process import batch_ens_mean,single_ens_mean,batch_convert_nc,single_convert_nc
 
@@ -24,7 +24,7 @@ logger.add(os.path.join(os.path.dirname(MAESTERS),'log/GEM_{time:%Y%m%d}'),rotat
 
 PARALLEL_NUM = 5
 
-
+CMC_GEM = get_model('cmc','gem')
 HOURS = {
     'medium': list(range(3,240,3))
 }
@@ -135,11 +135,13 @@ def convert_cmc_gem(grib_dir:str,out_dir:str):
 def operation(data_dir:str=None):
     now = datetime.utcnow() - timedelta(hours=4)
     batch = int(now.hour/12)*12
-    tmp_dir = now.strftime(os.path.join(CMC_GEM.data_dir+'_tmp', f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir+'_tmp'
-    data_dir = now.strftime(os.path.join(CMC_GEM.data_dir, f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir
+    tmp_dir = now.strftime(os.path.join(CMC_GEM.data_dir.replace('~',os.environ.get('HOME'))+'_tmp', \
+        f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir+'_tmp'
+    data_dir = now.strftime(os.path.join(CMC_GEM.data_dir.replace('~',os.environ.get('HOME')), \
+        f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir
     save_cmc_gem(now.replace(hour=batch),tmp_dir)
     convert_cmc_gem(tmp_dir,data_dir)
-    shutil.rmtree(tmp_dir)
+    shutil.rmtree(tmp_dir,ignore_errors=True)
 
 if __name__ == "__main__":
     if len(sys.argv)<=1:

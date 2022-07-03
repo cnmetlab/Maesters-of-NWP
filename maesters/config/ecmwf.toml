@@ -1,0 +1,95 @@
+[ecmwf_enfo]
+data_dir = '~/data/ecmwf/enfo'
+delay_hours = 9
+download_url = 'https://data.ecmwf.int/forecasts/%Y%m%d/%Hz/0p4-beta/enfo/%Y%m%d%H0000-{hour}h-enfo-ef.grib2'
+variables = [
+    ['tcwv',      'sfc',       '0',   'TCWV_SFC'], # Total column vertically-integrated water
+    ['10u',       'sfc',       '10',  'U_M10'], # U wind 10m
+    ['10v',       'sfc',       '10',  'V_M10'], # V wind 10m
+    ['st',        'sfc',       '0',   'ST_SFC'], # Soil temperature
+    ['msl',       'sfc',       '0',   'P_MSL'], # Mean sea level pressure
+    ['tp',        'sfc',       '0',   'TP_SFC'], # Total precipitation (accum)
+    ['2t',        'sfc',       '2',   'TMP_SFC'], # 2m Temperature
+    ['sp',        'sfc',       '0',   'SP_SFC'], # Surface Pressure
+    ['ro',        'sfc',       '0',   'RO_SFC'], # Runoff
+    ['skt',       'sfc',       '0',   'SKT_SFC'], # Skin Temperature
+    ['u',         'pl',        '1000','U_P1000'], 
+    ['v',         'pl',        '1000','V_P1000'],
+    ['gh',        'pl',        '1000','GH_P1000'], # Geopotential height
+    ['d',         'pl',        '1000','D_P1000'],
+    ['vo',        'pl',        '1000','VO_P1000'],
+    ['t',         'pl',        '1000','TMP_P1000'],
+    ['r',         'pl',        '1000','R_P1000'],
+    ['u',         'pl',        '925', 'U_P925'],
+    ['v',         'pl',        '925', 'V_P925'],
+    ['gh',        'pl',        '925', 'GH_P925'],
+    ['u',         'pl',        '850', 'U_P850'],
+    ['v',         'pl',        '850', 'V_P850'],
+    ['gh',        'pl',        '850', 'GH_P850'],
+    ['u',         'pl',        '700', 'U_P700'],
+    ['v',         'pl',        '700', 'V_P700'],
+    ['gh',        'pl',        '700', 'GH_P700'],
+    ['u',         'pl',        '500', 'U_P500'],
+    ['v',         'pl',        '500', 'V_P500'],
+    ['gh',        'pl',        '500', 'GH_P500'],
+    ['u',         'pl',        '300', 'U_P300'],
+    ['v',         'pl',        '300', 'V_P300'],
+    ['gh',        'pl',        '300', 'GH_P300'],
+    ['u',         'pl',        '250', 'U_P250'],
+    ['v',         'pl',        '250', 'V_P250'],
+    ['gh',        'pl',        '250', 'GH_P250'],
+    ['u',         'pl',        '200', 'U_P200'],
+    ['v',         'pl',        '200', 'V_P200'],
+    ['gh',        'pl',        '200', 'GH_P200'],
+    ['u',         'pl',        '50',  'U_P50'],
+    ['v',         'pl',        '50',  'V_P50'],
+    ['gh',        'pl',        '50',  'GH_P50'],
+]
+
+[ecmwf_oper]
+data_dir = '~/data/ecmwf/oper'
+delay_hours = 8
+download_url = 'https://data.ecmwf.int/forecasts/%Y%m%d/%Hz/0p4-beta/oper/%Y%m%d%H0000-{hour}h-oper-fc.grib2'
+variables = [
+    ['tcwv',      'sfc',       '0',   'TCWV_SFC'], # Total column vertically-integrated water
+    ['10u',       'sfc',       '10',  'U_M10'], # U wind 10m
+    ['10v',       'sfc',       '10',  'V_M10'], # V wind 10m
+    ['st',        'sfc',       '0',   'ST_SFC'], # Soil temperature
+    ['msl',       'sfc',       '0',   'MSL_MSL'], # Mean sea level pressure
+    ['tp',        'sfc',       '0',   'TP_SFC'], # Total precipitation (accum)
+    ['2t',        'sfc',       '2',   'TMP_SFC'], # 2m Temperature
+    ['sp',        'sfc',       '0',   'SP_SFC'], # Surface Pressure
+    ['ro',        'sfc',       '0',   'RO_SFC'], # Runoff
+    ['skt',       'sfc',       '0',   'SKT_SFC'], # Skin Temperature
+    ['u',         'pl',        '1000','U_P1000'], 
+    ['v',         'pl',        '1000','V_P1000'],
+    ['gh',        'pl',        '1000','GH_P1000'], # Geopotential height
+    ['d',         'pl',        '1000','D_P1000'],
+    ['vo',        'pl',        '1000','VO_P1000'],
+    ['t',         'pl',        '1000','TMP_P1000'],
+    ['r',         'pl',        '1000','R_P1000'],
+    ['u',         'pl',        '925', 'U_P925'],
+    ['v',         'pl',        '925', 'V_P925'],
+    ['gh',        'pl',        '925', 'GH_P925'],
+    ['u',         'pl',        '850', 'U_P850'],
+    ['v',         'pl',        '850', 'V_P850'],
+    ['gh',        'pl',        '850', 'GH_P850'],
+    ['u',         'pl',        '700', 'U_P700'],
+    ['v',         'pl',        '700', 'V_P700'],
+    ['gh',        'pl',        '700', 'GH_P700'],
+    ['u',         'pl',        '500', 'U_P500'],
+    ['v',         'pl',        '500', 'V_P500'],
+    ['gh',        'pl',        '500', 'GH_P500'],
+    ['u',         'pl',        '300', 'U_P300'],
+    ['v',         'pl',        '300', 'V_P300'],
+    ['gh',        'pl',        '300', 'GH_P300'],
+    ['u',         'pl',        '250', 'U_P250'],
+    ['v',         'pl',        '250', 'V_P250'],
+    ['gh',        'pl',        '250', 'GH_P250'],
+    ['u',         'pl',        '200', 'U_P200'],
+    ['v',         'pl',        '200', 'V_P200'],
+    ['gh',        'pl',        '200', 'GH_P200'],
+    ['u',         'pl',        '50',  'U_P50'],
+    ['v',         'pl',        '50',  'V_P50'],
+    ['gh',        'pl',        '50',  'GH_P50'],
+]

@@ -1,19 +1,19 @@
 
 [cmc_gem]
-data_dir = '~/data/eccc/GEM/orig'
+data_dir = '~/data/cmc/GEM'
 delay_hours = 4
 download_url = 'https://dd.weather.gc.ca/model_gem_global/15km/grib2/lat_lon/{batch}/{hour}/CMC_glb_{var}_{level_type}_{level}_latlon.15x.15_%Y%m%d%H_P{hour}.grib2'
 variables = [
-    ['SWAT',      'DBLL',   '10cm', 'SWAT_CM10'],
-    ['TSOIL',     'DBLL',   '10cm', 'TSOIL_CM10'],
-    ['RH',        'TGL',    '2m',   'RHU_L0'],
-    ['TMP',       'TGL',    '2m',   'TMP_L0'],
+    ['SWAT',      'DBLL',   '100',  'SWAT_CM100'],
+    ['TSOIL',     'DBLL',   '100',  'TSOIL_CM100'],
+    ['RH',        'TGL',    '2',    'RHU_SFC'],
+    ['TMP',       'TGL',    '2',    'TMP_SFC'],
     ['TMP',       'TGL',    '40',   'TMP_M40'],
     ['TMP',       'TGL',    '80',   'TMP_M80'],
     ['TMP',       'TGL',    '120',  'TMP_M120'],
-    ['UGRD',      'TGL',    '10m',  'U_M10'],
-    ['VGRD',      'TGL',    '10m',  'V_M10'],
-    ['SPFH',      'TGL',    '2',    'SPFH_L0'],
+    ['UGRD',      'TGL',    '10',   'U_M10'],
+    ['VGRD',      'TGL',    '10',   'V_M10'],
+    ['SPFH',      'TGL',    '2',    'SPFH_SFC'],
     ['SPFH',      'TGL',    '40',   'SPFH_M40'],
     ['SPFH',      'TGL',    '80',   'SPFH_M80'],
     ['SPFH',      'TGL',    '120',  'SPFH_M120'],
@@ -21,28 +21,28 @@ variables = [
     ['WIND',      'TGL',    '40',   'WIND_M40'],
     ['WIND',      'TGL',    '80',   'WIND_M80'],
     ['WIND',      'TGL',    '120',  'WIND_M120'],
-    ['APCP',      'SFC',    '0',    'TP_L0'],
-    ['AFRAIN',    'SFC',    '0',    'AFRAIN_L0'],
-    ['AICEP',     'SFC',    '0',    'AICEP_L0'],
-    ['ARAIN',     'SFC',    '0',    'AFRAIN_L0'],
-    ['ASNOW',     'SFC',    '0',    'ASNOW_L0'],
-    ['CAPE',      'SFC',    '0',    'CAPE_L0'],
-    ['CIN',       'SFC',    '0',    'CIN_L0'],
-    ['DSWRF',     'SFC',    '0',    'DSWRF_L0'],
-    ['DLWRF',     'SFC',    '0',    'DLWRF_L0'],
-    ['ICETK',     'SFC',    '0',    'ICETK_L0'],
-    ['LHTFL',     'SFC',    '0',    'LHTFL_L0'],
-    ['OLR',       'NTAT',   '0',    'OLR_L0'],
-    ['PRMSL',     'MSL',    '0',    'PRMSL_S0'],
-    ['PWAT',      'EATM',   '0',    'PWAT_L0'],
-    ['PRES',      'SFC',    '0',    'PRES_L0'],
-    ['SHTFL',     'SFC',    '0',    'SHTFL_L0'],
-    ['SNOD',      'SFC',    '0',    'SNOD_L0'],
-    ['SFCWRO',    'SFC',    '0',    'SFCWRO_L0'],
-    ['TCDC',      'SFC',    '0',    'TCC_L0'],
-    ['ULWRF',     'SFC',    '0',    'ULWRF_L0'],
-    ['USWRF',     'SFC',    '0',    'USWRF_L0'],
-    ['WEASD',     'SFC',    '0',    'WEASD_L0'],
+    ['APCP',      'SFC',    '0',    'TP_SFC'],
+    ['AFRAIN',    'SFC',    '0',    'AFRAIN_SFC'],
+    ['AICEP',     'SFC',    '0',    'AICEP_SFC'],
+    ['ARAIN',     'SFC',    '0',    'AFRAIN_SFC'],
+    ['ASNOW',     'SFC',    '0',    'ASNOW_SFC'],
+    ['CAPE',      'SFC',    '0',    'CAPE_SFC'],
+    ['CIN',       'SFC',    '0',    'CIN_SFC'],
+    ['DSWRF',     'SFC',    '0',    'DSWRF_SFC'],
+    ['DLWRF',     'SFC',    '0',    'DLWRF_SFC'],
+    ['ICETK',     'SFC',    '0',    'ICETK_SFC'],
+    ['LHTFL',     'SFC',    '0',    'LHTFL_SFC'],
+    ['OLR',       'NTAT',   '0',    'OLR_SFC'],
+    ['PRMSL',     'MSL',    '0',    'PRMSL_MSL'],
+    ['PWAT',      'EATM',   '0',    'PWAT_SFC'],
+    ['PRES',      'SFC',    '0',    'PRES_SFC'],
+    ['SHTFL',     'SFC',    '0',    'SHTFL_SFC'],
+    ['SNOD',      'SFC',    '0',    'SNOD_SFC'],
+    ['SFCWRO',    'SFC',    '0',    'SFCWRO_SFC'],
+    ['TCDC',      'SFC',    '0',    'TCC_SFC'],
+    ['ULWRF',     'SFC',    '0',    'ULWRF_SFC'],
+    ['USWRF',     'SFC',    '0',    'USWRF_SFC'],
+    ['WEASD',     'SFC',    '0',    'WEASD_SFC'],
     ['HGT',       'ISBL',   '0010', 'HGT_P010'],
     ['RH',        'ISBL',   '0010', 'RHU_P010'],
     ['TMP',       'ISBL',   '0010', 'TMP_P010'],
@@ -102,20 +102,20 @@ variables = [
 ]
 
 [cmc_geps_ens]
-data_dir = '~/data/cmc/GEPS_ENS/orig'
+data_dir = '~/data/cmc/GEPS_ENS'
 delay_hours = 6
 download_url = 'https://dd.weather.gc.ca/ensemble/geps/grib2/{PRODUCT}/{batch}/{hour}/CMC_geps-{TYPE}_{var}_{level_type}_{level}_latlon0p5x0p5_%Y%m%d%H_P{hour}_allmbrs.grib2'
 variables = [
     ['SWAT',      'DBLL',   '10cm', 'SWAT_CM10'],
     ['TSOIL',     'DBLL',   '10cm', 'TSOIL_CM10'],
-    ['RH',        'TGL',    '2m',   'RHU_L0'],
-    ['TMP',       'TGL',    '2m',   'TMP_L0'],
+    ['RH',        'TGL',    '2m',   'RHU_SFC'],
+    ['TMP',       'TGL',    '2m',   'TMP_SFC'],
     ['TMP',       'TGL',    '40',   'TMP_M40'],
     ['TMP',       'TGL',    '80',   'TMP_M80'],
     ['TMP',       'TGL',    '120',  'TMP_M120'],
     ['UGRD',      'TGL',    '10m',  'U_M10'],
     ['VGRD',      'TGL',    '10m',  'V_M10'],
-    ['SPFH',      'TGL',    '2',    'SPFH_L0'],
+    ['SPFH',      'TGL',    '2',    'SPFH_SFC'],
     ['SPFH',      'TGL',    '40',   'SPFH_M40'],
     ['SPFH',      'TGL',    '80',   'SPFH_M80'],
     ['SPFH',      'TGL',    '120',  'SPFH_M120'],
@@ -123,28 +123,28 @@ variables = [
     ['WIND',      'TGL',    '40',   'WIND_M40'],
     ['WIND',      'TGL',    '80',   'WIND_M80'],
     ['WIND',      'TGL',    '120',  'WIND_M120'],
-    ['APCP',      'SFC',    '0',    'TP_L0'],
-    ['AFRAIN',    'SFC',    '0',    'AFRAIN_L0'],
-    ['AICEP',     'SFC',    '0',    'AICEP_L0'],
-    ['ARAIN',     'SFC',    '0',    'AFRAIN_L0'],
-    ['ASNOW',     'SFC',    '0',    'ASNOW_L0'],
-    ['CAPE',      'SFC',    '0',    'CAPE_L0'],
-    ['CIN',       'SFC',    '0',    'CIN_L0'],
-    ['DSWRF',     'SFC',    '0',    'DSWRF_L0'],
-    ['DLWRF',     'SFC',    '0',    'DLWRF_L0'],
-    ['ICETK',     'SFC',    '0',    'ICETK_L0'],
-    ['LHTFL',     'SFC',    '0',    'LHTFL_L0'],
-    ['OLR',       'NTAT',   '0',    'OLR_L0'],
-    ['PRMSL',     'MSL',    '0',    'PRMSL_S0'],
-    ['PWAT',      'EATM',   '0',    'PWAT_L0'],
-    ['PRES',      'SFC',    '0',    'PRES_L0'],
-    ['SHTFL',     'SFC',    '0',    'SHTFL_L0'],
-    ['SNOD',      'SFC',    '0',    'SNOD_L0'],
-    ['SFCWRO',    'SFC',    '0',    'SFCWRO_L0'],
-    ['TCDC',      'SFC',    '0',    'TCC_L0'],
-    ['ULWRF',     'SFC',    '0',    'ULWRF_L0'],
-    ['USWRF',     'SFC',    '0',    'USWRF_L0'],
-    ['WEASD',     'SFC',    '0',    'WEASD_L0'],
+    ['APCP',      'SFC',    '0',    'TP_SFC'],
+    ['AFRAIN',    'SFC',    '0',    'AFRAIN_SFC'],
+    ['AICEP',     'SFC',    '0',    'AICEP_SFC'],
+    ['ARAIN',     'SFC',    '0',    'AFRAIN_SFC'],
+    ['ASNOW',     'SFC',    '0',    'ASNOW_SFC'],
+    ['CAPE',      'SFC',    '0',    'CAPE_SFC'],
+    ['CIN',       'SFC',    '0',    'CIN_SFC'],
+    ['DSWRF',     'SFC',    '0',    'DSWRF_SFC'],
+    ['DLWRF',     'SFC',    '0',    'DLWRF_SFC'],
+    ['ICETK',     'SFC',    '0',    'ICETK_SFC'],
+    ['LHTFL',     'SFC',    '0',    'LHTFL_SFC'],
+    ['OLR',       'NTAT',   '0',    'OLR_SFC'],
+    ['PRMSL',     'MSL',    '0',    'PRMSL_MSL'],
+    ['PWAT',      'EATM',   '0',    'PWAT_SFC'],
+    ['PRES',      'SFC',    '0',    'PRES_SFC'],
+    ['SHTFL',     'SFC',    '0',    'SHTFL_SFC'],
+    ['SNOD',      'SFC',    '0',    'SNOD_SFC'],
+    ['SFCWRO',    'SFC',    '0',    'SFCWRO_SFC'],
+    ['TCDC',      'SFC',    '0',    'TCC_SFC'],
+    ['ULWRF',     'SFC',    '0',    'ULWRF_SFC'],
+    ['USWRF',     'SFC',    '0',    'USWRF_SFC'],
+    ['WEASD',     'SFC',    '0',    'WEASD_SFC'],
     ['HGT',       'ISBL',   '0010', 'HGT_P010'],
     ['RH',        'ISBL',   '0010', 'RHU_P010'],
     ['TMP',       'ISBL',   '0010', 'TMP_P010'],
@@ -205,118 +205,118 @@ variables = [
 
 
 [dwd_icon]
-data_dir = '~/data/dwd/icon/orig'
+data_dir = '~/data/dwd/icon'
 delay_hours = 4
 download_url = 'https://opendata.dwd.de/weather/nwp/icon/grib/{batch}/{variable}/icon_global_*_*_%Y%m%d%H_{hour}_{VARIABLE}.grib2.bz2'
 variables = [
-    ['ALB_RAD',   'single',    '0',   'ALB_RAD_L0'], # surface_albedo
-    ['ALHFL_S',   'single',    '0',   'ALHFL_L0'], # Latent Heat Net Flux
-    ['ASHFL_S',   'single',    '0',   'ASHFL_L0'], # # Sensible Heat Net Flux
-    ['ASOB_S',    'single',    '0',   'ASOB_L0'], # Net short wave radiation flux (at the surface)
-    ['ASOB_T',    'single',    '0',   'ASOB_L90'], # Net short wave radiation flux (on the model top)
-    ['ASWDIFD_S', 'single',    '0',   'ASWDIFD_L0'], # Downward diffusive short wave radiation flux at surface
-    ['ASWDIFU_S', 'single',    '0',   'ASWDIFU_L0'], # Upward diffusive short wave radiation flux at surface
-    ['ASWDIR_S',  'single',    '0',   'ASWDIR_L0'], # Downward direct short wave radiation flux at surface
-    ['ATHB_S',    'single',    '0',   'ATHB_L0'], #?
-    ['CAPE_CON',  'single',    '0',   'CAPE_CON_L0'], # Convective Available Potential Energy
-    ['CAPE_ML',   'single',    '0',   'CAPE_ML_L0'], # Convective Available Potential Energy, mean layer
-    ['CLCH',      'single',    '0',   'CLCH_L0'], #?
-    ['CLCL',      'single',    '0',   'CLCL_L0'], #?
-    ['CLCM',      'single',    '0',   'CLCM_L0'], #?
-    ['CLCT',      'single',    '0',   'CLCT_L0'], #?
-    ['CLDEPTH',   'single',    '0',   'CLDEPTH_L0'],
-    ['CLCT_MOD',  'single',    '0',   'CLCT_MOD_L0'], # Modified cloud cover for media
-    ['FR_ICE',    'single',    '0',   'FR_ICE_S0'], # sea ice area fraction
-    ['H_SNOW',    'single',    '0',   'H_SNOW_L0'], # Snow depth
-    ['HBAS_CON',  'single',    '0',   'HBAS_CON_S0'], # Height of Convective Cloud Base above msl
-    ['HTOP_CON',  'single',    '0',   'HTOP_CON_S0'], # Height of Convective Cloud Top above msl
-    ['HTOP_DC',   'single',    '0',   'HTOP_DC_S0'], # Height of top of dry convection above MSL
-    ['HZEROCL',   'single',    '0',   'HZEROCL_L0'], #?
-    ['PMSL',      'single',    '0',   'PMSL_S0'], #?
-    ['PS',        'single',    '0',   'PS_L0'], #?
-    ['QV_S',      'single',    '0',   'QV_L0'], # Specific Humidity (S)
-    ['RAIN_CON',  'single',    '0',   'RAIN_CON_L0'], # Convective rain
-    ['RAIN_GSP',  'single',    '0',   'RAIN_GSP_L0'], # Large scale rain (Accumulation)
-    ['RHO_SNOW',  'single',    '0',   'RHO_SNOW_L0'], # Snow density
-    ['SNOW_CON',  'single',    '0',   'SNOW_CON_L0'], # Convective Snowfall water equivalent (s)
-    ['SNOW_GSP',  'single',    '0',   'SNOW_GSP_L0'], # Large-Scale snowfall - water equivalent (Accumulation)
-    ['T_G',       'single',    '0',   'T_G_L0'], # temperature (G)
-    ['T_SNOW',    'single',    '0',   'T_SNOW_L0'], #  Snow temperature (top of snow)
-    ['TOT_PREC',  'single',    '0',   'TP_L0'], # Total Precipitation
-    ['W_SNOW',    'single',    '0',   'W_SNOW_L0'], # Snow depth water equivalent
-    ['WW',        'single',    '0',   'WW_L0'], # ?
-    ['Z0',        'single',    '0',   'Z0_L0'], #?
-    ['TD_2M',     'single',    '2',   'TD_L0'], # 2 metre dewpoint temperature
-    ['TMAX_2M',   'single',    '2',   'TMAX_L0'], # Max 2m Temperature (i) 
-    ['TMIN_2M',   'single',    '2',   'TMIN_L0'], # Min 2m Temperature (i)
-    ['RELHUM_2M', 'single',    '2',   'RELHUM_L0'], # 2 metre relative humidity
-    ['T_2M',      'single',    '2',   'TMP_L0'], # ?
-    ['U_10M',     'single',    '10',  'U_L0'], #  10 metre U wind component
-    ['V_10M',     'single',    '10',  'V_L0'], # 10 metre V wind component
-    ['VMAX_10M',  'single',    '10',  'VMAX_L0'], # maximum Wind 10m
-    ['FI',        'pressure',  '30',  'FI_P30'],
-    ['RELHUM',    'pressure',  '30',  'RELHUM_P30'],
-    ['FI',        'pressure',  '50',  'FI_P50'],
-    ['RELHUM',    'pressure',  '50',  'RELHUM_P50'],
-    ['FI',        'pressure',  '70',  'FI_P70'],
-    ['RELHUM',    'pressure',  '70',  'RELHUM_P70'],
-    ['FI',        'pressure',  '100', 'FI_P100'],
-    ['RELHUM',    'pressure',  '100', 'RELHUM_P100'],
-    ['FI',        'pressure',  '150', 'FI_P150'],
-    ['RELHUM',    'pressure',  '150', 'RELHUM_P150'],
-    ['FI',        'pressure',  '200', 'FI_P200'],
-    ['RELHUM',    'pressure',  '200', 'RELHUM_P200'],
-    ['FI',        'pressure',  '250', 'FI_P250'],
-    ['RELHUM',    'pressure',  '250', 'RELHUM_P250'],
-    ['FI',        'pressure',  '300', 'FI_P300'],
-    ['RELHUM',    'pressure',  '300', 'RELHUM_P300'],
-    ['FI',        'pressure',  '400', 'FI_P400'],
-    ['RELHUM',    'pressure',  '400', 'RELHUM_P400'],
-    ['FI',        'pressure',  '500', 'FI_P500'],
-    ['RELHUM',    'pressure',  '500', 'RELHUM_P500'],
-    ['FI',        'pressure',  '600', 'FI_P600'],
-    ['RELHUM',    'pressure',  '600', 'RELHUM_P600'],
-    ['FI',        'pressure',  '700', 'FI_P700'],
-    ['RELHUM',    'pressure',  '700', 'RELHUM_P700'],
-    ['FI',        'pressure',  '800', 'FI_P800'],
-    ['RELHUM',    'pressure',  '800', 'RELHUM_P800'],
-    ['FI',        'pressure',  '850', 'FI_P850'],
-    ['RELHUM',    'pressure',  '850', 'RELHUM_P850'],
-    ['FI',        'pressure',  '900', 'FI_P900'],
-    ['RELHUM',    'pressure',  '900', 'RELHUM_P900'],
-    ['FI',        'pressure',  '925', 'FI_P925'],
-    ['RELHUM',    'pressure',  '925', 'RELHUM_P925'],
-    ['FI',        'pressure',  '950', 'FI_P950'],
-    ['RELHUM',    'pressure',  '950', 'RELHUM_P950'],
-    ['FI',        'pressure',  '1000','FI_P1000'],
-    ['RELHUM',    'pressure',  '1000','RELHUM_P1000'],
-    ['P',         'model',     '90',  'P_MODEL90'],
-    ['T',         'model',     '90',  'T_MODEL90'],
-    ['U',         'model',     '90',  'U_MODEL90'],
-    ['V',         'model',     '90',  'V_MODEL90'],
-    ['W',         'model',     '90',  'W_MODEL90'],
-    ['CLC',       'model',     '90',  'CLC_MODEL90'],
-    ['QV',        'model',     '90',  'QV_MODEL90'],
-    ['TKE',       'model',     '90',  'TKE_MODEL90'],
-    ['T_SO',      'soil',      '0',   'T_SO_L0'], # ?
-    ['W_SO',      'soil',      '0',   'W_SO_SOIL0'],
+    ['ALB_RAD',   'single',    '0',   'ALB_RAD_SFC',    'Albedo at surface'],
+    ['ALHFL_S',   'single',    '0',   'ALHFL_SFC',      'Latent heat flux at surface'], # net
+    ['ASHFL_S',   'single',    '0',   'ASHFL_SFC',      'Sensible heat flux at suface'], # net
+    ['ASOB_S',    'single',    '0',   'ASOB_SFC',       'Short wave radiation flux at surface'], # net
+    ['ASOB_T',    'single',    '0',   'ASOB_L90',       'Short wave radaiation flux at top level'],
+    ['ASWDIFD_S', 'single',    '0',   'ASWDIFD_SFC',    'Downward diffusive short wave radiation flux at surface'], 
+    ['ASWDIFU_S', 'single',    '0',   'ASWDIFU_SFC',    'Upward diffusive short wave radiation flux at surface'], 
+    ['ASWDIR_S',  'single',    '0',   'ASWDIR_SFC',     'Downward direct short wave radiation flux at surface'], 
+    ['ATHB_S',    'single',    '0',   'ATHB_SFC',       'Long wave radiation flux at surface'], # net
+    ['CAPE_CON',  'single',    '0',   'CAPE_CON_SFC',   'Convective available potential energy at surface'],
+    ['CAPE_ML',   'single',    '0',   'CAPE_ML_SFC',    'Convective available potential energy at mean layer'], 
+    ['CLCH',      'single',    '0',   'CLC__HIGH',      'Cloud cover at 0 - 400hPa'],
+    ['CLCL',      'single',    '0',   'CLC_LOW',        'Cloud cover at 800hPa - Soil'], #?
+    ['CLCM',      'single',    '0',   'CLC_MID',        'Cloud cover at 400 - 800hPa'],
+    ['CLCT',      'single',    '0',   'CLCT_SFC',       'Total cloud cover'],
+    ['CLDEPTH',   'single',    '0',   'CLDEPTH_SFC',    'Modified cloud depth for media'],
+    ['CLCT_MOD',  'single',    '0',   'CLCT_MOD_SFC',   'Modified cloud cover for media'], 
+    ['FR_ICE',    'single',    '0',   'FR_ICE_MSL',     'Sea ice area fraction'], # 
+    ['H_SNOW',    'single',    '0',   'H_SNOW_SFC',     'Snow depth'],
+    ['HBAS_CON',  'single',    '0',   'HBAS_CON_MSL',   'Height of convective cloud base above msl'],
+    ['HTOP_CON',  'single',    '0',   'HTOP_CON_MSL',   'Height of convective cloud top above msl'], 
+    ['HTOP_DC',   'single',    '0',   'HTOP_DC_MSL',    'Height of top of dry convection above msl'],
+    ['HZEROCL',   'single',    '0',   'HZEROCL_SFC',    'Height of 0 degree celsius isotherm above msl'],
+    ['PMSL',      'single',    '0',   'PMSL_MSL',       'Pressure reduced to MSL'], 
+    ['PS',        'single',    '0',   'SP_SFC',         'Surface pressure'], 
+    ['QV_S',      'single',    '0',   'RH_SFC',         'Specific humidity at surface'],
+    ['RAIN_CON',  'single',    '0',   'RAIN_CON_SFC',   'Convective rain at surface'],
+    ['RAIN_GSP',  'single',    '0',   'RAIN_GSP_SFC',   'Large scale rain at suface'],
+    ['RHO_SNOW',  'single',    '0',   'RHO_SNOW_SFC',   'Snow density'], 
+    ['SNOW_CON',  'single',    '0',   'SNOW_CON_SFC',   'Convective snowfall water at surface'],
+    ['SNOW_GSP',  'single',    '0',   'SNOW_GSP_SFC',   'Large-scale snowfall at surface'],
+    ['T_G',       'single',    '0',   'T_G_SFC',        'Groud air temperature at surface'],
+    ['T_SNOW',    'single',    '0',   'T_SNOW_SFC',     'Snow temperature'], 
+    ['TOT_PREC',  'single',    '0',   'TP_SFC',         'Total precipitation'],
+    ['W_SNOW',    'single',    '0',   'W_SNOW_SFC',     'Snow depth water equivalent'], # Snow depth water equivalent
+    ['WW',        'single',    '0',   'WW_SFC',         'Weather interpretation'], 
+    ['Z0',        'single',    '0',   'Z0_SFC',         'Surface roughness'], 
+    ['TD_2M',     'single',    '2',   'TD_SFC',         'Dewpoint temperature at surface'], 
+    ['TMAX_2M',   'single',    '2',   'TMAX_SFC',       'Maximun temperature at surface'],
+    ['TMIN_2M',   'single',    '2',   'TMIN_SFC',       'Minimun temperature at surface'],
+    ['RELHUM_2M', 'single',    '2',   'RHU_SFC',        'Relative humidity at surface'], 
+    ['T_2M',      'single',    '2',   'TMP_SFC',        'Air temperature at surface'], 
+    ['U_10M',     'single',    '10',  'U_SFC',          'U wind component at 10 meter'], 
+    ['V_10M',     'single',    '10',  'V_SFC',          'V wind component at 10 meter '], 
+    ['VMAX_10M',  'single',    '10',  'VMAX_SFC',       'Maximum wind speed at 10 meter'],
+    ['FI',        'pressure',  '30',  'FI_P30',         'Geopotential at 30 hPa'],
+    ['RELHUM',    'pressure',  '30',  'RELHUM_P30',     'Relative humidity at 30 hPa'],
+    ['FI',        'pressure',  '50',  'FI_P50',         'Geopotential at 50 hPa'],
+    ['RELHUM',    'pressure',  '50',  'RELHUM_P50',     'Relative humidity at 50 hPa'],
+    ['FI',        'pressure',  '70',  'FI_P70',         'Geopotential at 70 hPa'],
+    ['RELHUM',    'pressure',  '70',  'RELHUM_P70',     'Relative humidity at 70 hPa'],
+    ['FI',        'pressure',  '100', 'FI_P100',        'Geopotential at 100 hPa'],
+    ['RELHUM',    'pressure',  '100', 'RELHUM_P100',    'Relative humidity at 100 hPa'],
+    ['FI',        'pressure',  '150', 'FI_P150',        'Geopotential at 150 hPa'],
+    ['RELHUM',    'pressure',  '150', 'RELHUM_P150',    'Relative humidity at 150 hPa'],
+    ['FI',        'pressure',  '200', 'FI_P200',        'Geopotential at 200 hPa'],
+    ['RELHUM',    'pressure',  '200', 'RELHUM_P200',    'Relative humidity at 200 hPa'],
+    ['FI',        'pressure',  '250', 'FI_P250',        'Geopotential at 250 hPa'],
+    ['RELHUM',    'pressure',  '250', 'RELHUM_P250',    'Relative humidity at 250 hPa'],
+    ['FI',        'pressure',  '300', 'FI_P300',        'Geopotential at 300 hPa'],
+    ['RELHUM',    'pressure',  '300', 'RELHUM_P300',    'Relative humidity at 300 hPa'],
+    ['FI',        'pressure',  '400', 'FI_P400',        'Geopotential at 400 hPa'],
+    ['RELHUM',    'pressure',  '400', 'RELHUM_P400',    'Relative humidity at 400 hPa'],
+    ['FI',        'pressure',  '500', 'FI_P500',        'Geopotential at 500 hPa'],
+    ['RELHUM',    'pressure',  '500', 'RELHUM_P500',    'Relative humidity at 500 hPa'],
+    ['FI',        'pressure',  '600', 'FI_P600',        'Geopotential at 600 hPa'],
+    ['RELHUM',    'pressure',  '600', 'RELHUM_P600',    'Relative humidity at 600 hPa'],
+    ['FI',        'pressure',  '700', 'FI_P700',        'Geopotential at 700 hPa'],
+    ['RELHUM',    'pressure',  '700', 'RELHUM_P700',    'Relative humidity at 700 hPa'],
+    ['FI',        'pressure',  '800', 'FI_P800',        'Geopotential at 800 hPa'],
+    ['RELHUM',    'pressure',  '800', 'RELHUM_P800',    'Relative humidity at 800 hPa'],
+    ['FI',        'pressure',  '850', 'FI_P850',        'Geopotential at 850 hPa'],
+    ['RELHUM',    'pressure',  '850', 'RELHUM_P850',    'Relative humidity at 850 hPa'],
+    ['FI',        'pressure',  '900', 'FI_P900',        'Geopotential at 900 hPa'],
+    ['RELHUM',    'pressure',  '900', 'RELHUM_P900',    'Relative humidity at 900 hPa'],
+    ['FI',        'pressure',  '925', 'FI_P925',        'Geopotential at 925 hPa'],
+    ['RELHUM',    'pressure',  '925', 'RELHUM_P925',    'Relative humidity at 925 hPa'],
+    ['FI',        'pressure',  '950', 'FI_P950',        'Geopotential at 950 hPa'],
+    ['RELHUM',    'pressure',  '950', 'RELHUM_P950',    'Relative humidity at 950 hPa'],
+    ['FI',        'pressure',  '1000','FI_P1000',       'Geopotential at 1000 hPa'],
+    ['RELHUM',    'pressure',  '1000','RELHUM_P1000',   'Relative humidity at 1000 hPa'],
+    ['P',         'model',     '90',  'P_MODEL90',      'Pressure at model level 90'],
+    ['T',         'model',     '90',  'T_MODEL90',      'Temperature at model level 90'],
+    ['U',         'model',     '90',  'U_MODEL90',      'U wind component at model level 90'],
+    ['V',         'model',     '90',  'V_MODEL90',      'V wind component at model level 90'],
+    ['W',         'model',     '90',  'W_MODEL90',      'W wind component at model level 90'],
+    ['CLC',       'model',     '90',  'CLC_MODEL90',    'Cloud cover at model level 90'],
+    ['QV',        'model',     '90',  'RH_MODEL90',     'Relative humidity at model level 90'],
+    ['TKE',       'model',     '90',  'TKE_MODEL90',    'Turbulent kinetic energy'],
+    ['T_SO',      'soil',      '0',   'T_SO_CM0',       'Soil temperature'], 
+    ['W_SO',      'soil',      '0',   'W_SO_CM0',       'Intergrated soil Moisture'],
 ]
 
 [ecmwf_enfo]
-data_dir = '~/data/ecmwf/enfo/orig'
+data_dir = '~/data/ecmwf/enfo'
 delay_hours = 9
 download_url = 'https://data.ecmwf.int/forecasts/%Y%m%d/%Hz/0p4-beta/enfo/%Y%m%d%H0000-{hour}h-enfo-ef.grib2'
 variables = [
-    ['tcwv',      'sfc',       '0',   'TCWV_L0'], # Total column vertically-integrated water
+    ['tcwv',      'sfc',       '0',   'TCWV_SFC'], # Total column vertically-integrated water
     ['10u',       'sfc',       '10',  'U_M10'], # U wind 10m
     ['10v',       'sfc',       '10',  'V_M10'], # V wind 10m
-    ['st',        'sfc',       '0',   'ST_L0'], # Soil temperature
-    ['msl',       'sfc',       '0',   'MSL_S0'], # Mean sea level pressure
-    ['tp',        'sfc',       '0',   'TP_L0'], # Total precipitation (accum)
-    ['2t',        'sfc',       '2',   'TMP_L0'], # 2m Temperature
-    ['sp',        'sfc',       '0',   'SP_L0'], # Surface Pressure
-    ['ro',        'sfc',       '0',   'RO_L0'], # Runoff
-    ['skt',       'sfc',       '0',   'SKT_L0'], # Skin Temperature
+    ['st',        'sfc',       '0',   'ST_SFC'], # Soil temperature
+    ['msl',       'sfc',       '0',   'P_MSL'], # Mean sea level pressure
+    ['tp',        'sfc',       '0',   'TP_SFC'], # Total precipitation (accum)
+    ['2t',        'sfc',       '2',   'TMP_SFC'], # 2m Temperature
+    ['sp',        'sfc',       '0',   'SP_SFC'], # Surface Pressure
+    ['ro',        'sfc',       '0',   'RO_SFC'], # Runoff
+    ['skt',       'sfc',       '0',   'SKT_SFC'], # Skin Temperature
     ['u',         'pl',        '1000','U_P1000'], 
     ['v',         'pl',        '1000','V_P1000'],
     ['gh',        'pl',        '1000','GH_P1000'], # Geopotential height
@@ -351,20 +351,20 @@ variables = [
 ]
 
 [ecmwf_oper]
-data_dir = '~/data/ecmwf/oper/orig'
+data_dir = '~/data/ecmwf/oper'
 delay_hours = 8
 download_url = 'https://data.ecmwf.int/forecasts/%Y%m%d/%Hz/0p4-beta/oper/%Y%m%d%H0000-{hour}h-oper-fc.grib2'
 variables = [
-    ['tcwv',      'sfc',       '0',   'TCWV_L0'], # Total column vertically-integrated water
+    ['tcwv',      'sfc',       '0',   'TCWV_SFC'], # Total column vertically-integrated water
     ['10u',       'sfc',       '10',  'U_M10'], # U wind 10m
     ['10v',       'sfc',       '10',  'V_M10'], # V wind 10m
-    ['st',        'sfc',       '0',   'ST_L0'], # Soil temperature
-    ['msl',       'sfc',       '0',   'MSL_S0'], # Mean sea level pressure
-    ['tp',        'sfc',       '0',   'TP_L0'], # Total precipitation (accum)
-    ['2t',        'sfc',       '2',   'TMP_L0'], # 2m Temperature
-    ['sp',        'sfc',       '0',   'SP_L0'], # Surface Pressure
-    ['ro',        'sfc',       '0',   'RO_L0'], # Runoff
-    ['skt',       'sfc',       '0',   'SKT_L0'], # Skin Temperature
+    ['st',        'sfc',       '0',   'ST_SFC'], # Soil temperature
+    ['msl',       'sfc',       '0',   'MSL_MSL'], # Mean sea level pressure
+    ['tp',        'sfc',       '0',   'TP_SFC'], # Total precipitation (accum)
+    ['2t',        'sfc',       '2',   'TMP_SFC'], # 2m Temperature
+    ['sp',        'sfc',       '0',   'SP_SFC'], # Surface Pressure
+    ['ro',        'sfc',       '0',   'RO_SFC'], # Runoff
+    ['skt',       'sfc',       '0',   'SKT_SFC'], # Skin Temperature
     ['u',         'pl',        '1000','U_P1000'], 
     ['v',         'pl',        '1000','V_P1000'],
     ['gh',        'pl',        '1000','GH_P1000'], # Geopotential height

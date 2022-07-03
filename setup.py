@@ -10,7 +10,7 @@ with open(requirements_path) as f:
 
 setup(
     name='maesters-nwp',
-    version='0.0.5',
+    version='0.0.6',
     author='blizhan',
     author_email='blizhan@icloud.com',
     description='A package to get open NWP data in a elegant way',

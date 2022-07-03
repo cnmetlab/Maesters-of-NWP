@@ -23,6 +23,7 @@ class V:
 @dataclass
 class O:
     outname: str
+    # fullname: str
 
 @dataclass
 class MODEL:
@@ -32,10 +33,10 @@ class MODEL:
     download_url: str
     delay_hours: int
 
-def get_model(name:str):
-    with open(os.path.join(os.path.dirname(__file__),'models.toml'),'r') as f:
+def get_model(source:str,product:str):
+    with open(os.path.join(os.path.dirname(__file__),f'{source.lower()}.toml'),'r') as f:
         models = toml.load(f)
-    model = models.get(name)
+    model = models.get(f'{source.lower()}_{product.lower()}')
     if model:
         varibales = model.get('variables')
         var_dict = {}
@@ -45,7 +46,7 @@ def get_model(name:str):
             for v in varibales:
                 var_dict[V(v[0],v[1],v[2])] = O(v[3])
         m = MODEL(
-            name,
+            f'{source}_{product}',
             var_dict,
             model.get('data_dir'),
             model.get('download_url'),
@@ -54,21 +55,6 @@ def get_model(name:str):
     else:
         return None
 
-
-
-CMC_GEPS_ENS = get_model('cmc_geps_ens')
-CMC_GEM = get_model('cmc_gem')
-DWD_ICON = get_model('dwd_icon')
-ECMWF_ENFO = get_model('ecmwf_enfo')
-ECMWF_OPER = get_model('ecmwf_oper')
-
-MODELS = {
-    'cmc_gem': CMC_GEM,
-    'cmc_geps_ens': CMC_GEPS_ENS,
-    'dwd_icon': DWD_ICON,
-    'ecmwf_enfo': ECMWF_ENFO,
-    'ecmwf_oper': ECMWF_OPER,
-}
 
 DEFAULT_MAESTER = {
     'datahome': os.path.join(os.environ.get('HOME'),'data'),
@@ -79,5 +65,4 @@ DEFAULT_MAESTER = {
 
 
 if __name__ == "__main__":
-    DWD_ICON
     print()

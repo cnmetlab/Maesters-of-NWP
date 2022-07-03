@@ -14,9 +14,10 @@ import re
 import os
 import sys
 
+
 MAESTERS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(MAESTERS)
-from config import DWD_ICON, V
+from config import get_model, V
 from utils.download import batch_session_download,single_session_download
 from utils.post_process import batch_tri_transform,single_tri_transform
 
@@ -24,7 +25,7 @@ logger.add(os.path.join(os.path.dirname(MAESTERS),'log/DWD_ICON_{time:%Y%m%d}'),
 
 PARALLEL_NUM = 5
 
-
+DWD_ICON = get_model('dwd','icon')
 HOURS = {
     'medium': (list(range(0,78,1))+list(range(78,180+3,3)))
 }
@@ -113,7 +114,7 @@ def save_dwd_icon(date:datetime,local_dir:str):
 
         for k,v in DWD_ICON.variable.items():
             urls = get_files_dict(date.replace(hour=batch),var_dict={k:v})
-            url_fp_list = [(v,os.path.join(local_dir,os.path.basename(v.get('url')).split('.bz2')[0])) for k,v in urls.items()]
+            url_fp_list = [(v.get('url'),os.path.join(local_dir,os.path.basename(v.get('url')).split('.bz2')[0])) for k,v in urls.items()]
             results.append(pool.submit(batch_session_download,url_fp_list=url_fp_list,file_type='bz2'))
         for n,r in enumerate(as_completed(results)):
             res = r.result()
@@ -176,11 +177,13 @@ def dwd_transform(grib_dir:str,out_dir:str,grid_text:str=os.path.join(MAESTERS,'
 def operation(data_dir:str=None):
     now = datetime.utcnow() - timedelta(hours=4)
     batch = int(now.hour/12)*12
-    tmp_dir = now.strftime(os.path.join(DWD_ICON.data_dir+'_tmp', f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir+'_tmp'
-    data_dir = now.strftime(os.path.join(DWD_ICON.data_dir, f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir
+    tmp_dir = now.strftime(os.path.join(DWD_ICON.data_dir.replace('~',os.environ.get('HOME'))+'_tmp',\
+        f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir+'_tmp'
+    data_dir = now.strftime(os.path.join(DWD_ICON.data_dir.replace('~',os.environ.get('HOME')),\
+        f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir
     save_dwd_icon(now.replace(hour=batch),tmp_dir)
     dwd_transform(tmp_dir,data_dir)
-    shutil.rmtree(tmp_dir)
+    shutil.rmtree(tmp_dir,ignore_errors=True)
 
 
 if __name__ == "__main__":

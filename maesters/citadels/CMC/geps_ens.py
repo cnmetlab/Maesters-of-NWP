@@ -13,12 +13,14 @@ import re
 import os
 import sys
 
-from maesters.utils.post_process import batch_ens_stats
+MAESTERS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(MAESTERS)
+from utils.post_process import batch_ens_stats
 # import shutil
 
 MAESTERS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(MAESTERS)
-from config import CMC_GEPS_ENS, V
+from config import get_model, V
 from utils.download import batch_session_download,single_session_download
 from utils.post_process import batch_ens_mean,single_ens_mean,single_ens_stats
 
@@ -29,13 +31,24 @@ PARALLEL_NUM = 5
 # GEPS_ENS_URL: 'https://dd.weather.gc.ca/ensemble/geps/grib2/{PRODUCT}/{batch}/{hour}/'
 # FN EX: 'CMC_geps-raw_AFRAIN_SFC_0_latlon0p5x0p5_2022051400_P192_allmbrs.grib2'
 
+CMC_GEPS_ENS = get_model('cmc','geps_ens')
 HOURS = {
     'subseason': list(range(3,192,3))+list(range(192,768+6,6)),
     'medium': list(range(3,192,3))+list(range(192,384+6,6))
 }
 
 
-def parse_filename(fn,data_type:str='raw'):
+def parse_filename(fn:str,data_type:str='raw')->re.Match:
+    """parse filename from cmc
+
+    Args:
+        fn (str): filename
+        data_type (str, optional): data type. Defaults to 'raw'.
+
+    Returns:
+        re.Match: match result
+    """
+
     prod = 'prob'if data_type == 'products' else 'raw'
     parse_pattern = f'CMC_geps-{prod}_([A-Z]+)_([A-Z]+)_([0-9A-Za-z]+)_([0-9A-Za-z]+)_([0-9]+)_P([0-9]+)_*'
     match = re.match(parse_pattern, fn)
@@ -125,7 +138,7 @@ def save_geps_ens(date:datetime,local_dir:str,product='raw'):
         return 0
 
 
-def cal_geps_ens_stats(grib_dir:str,out_dir:str,stats:str,split_rule:str=os.path.join(MAESTERS,'static/pf_split')):
+def cal_geps_ens_stats(grib_dir:str,out_dir:str,stats:str,varname_suffix:bool=False,split_rule:str=os.path.join(MAESTERS,'static/pf_split')):
     if not os.path.exists(out_dir):
         os.makedirs(out_dir,0o777,exist_ok=True)
     files = glob(os.path.join(grib_dir,'*.grib*'))
@@ -137,7 +150,8 @@ def cal_geps_ens_stats(grib_dir:str,out_dir:str,stats:str,split_rule:str=os.path
             v = V(m[1],m[2],m[3])
             o = CMC_GEPS_ENS.variable.get(v)
             if o:
-                t = (files[n],os.path.join(out_dir,f'{o.outname}-{m[6]}.nc'),o.outname)
+                name = o.outname+stats.upper() if varname_suffix else o.outname
+                t = (files[n],os.path.join(out_dir,f'{o.outname}-{m[6]}.nc'),name)
                 in_out_var_list.append(t)
     fail = batch_ens_stats(in_out_var_list,stats,split_rule)
     
@@ -156,14 +170,21 @@ def cal_geps_ens_mean(grib_dir:str,out_dir:str,split_rule:str=os.path.join(MAEST
 
 
 @retry(stop_max_delay=3*60*60*10E3,stop_max_attempt_number=1)
-def operation(data_dir:str=None):
+def operation(data_dir:str=None,rm_origin:bool=True,**kwargs):
     now = datetime.utcnow() - timedelta(hours=6)
     batch = int(now.hour/12)*12
-    tmp_dir = now.strftime(os.path.join(CMC_GEPS_ENS.data_dir+'_tmp', f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir+'_tmp'
-    data_dir = now.strftime(os.path.join(CMC_GEPS_ENS.data_dir, f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir
+    tmp_dir = now.strftime(os.path.join(CMC_GEPS_ENS.data_dir.replace('~',os.environ.get('HOME'))+'_tmp', \
+        f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir+'_tmp'
+    data_dir = now.strftime(os.path.join(CMC_GEPS_ENS.data_dir.replace('~',os.environ.get('HOME')), \
+        f'%Y%m%d{str(batch).zfill(2)}0000')) if data_dir is None else data_dir
+    
     save_geps_ens(now.replace(hour=batch),tmp_dir)
-    cal_geps_ens_mean(tmp_dir,data_dir)
-    shutil.rmtree(tmp_dir)
+    if kwargs.get('stats') is None:
+        cal_geps_ens_mean(tmp_dir,data_dir)
+    elif isinstance(kwargs.get('stats'),str):
+        cal_geps_ens_stats(tmp_dir,data_dir,stats=kwargs.get('stats'),varname_suffix=True)
+    
+    if rm_origin:shutil.rmtree(tmp_dir,ignore_errors=True)
 
 
 if __name__ == "__main__":
