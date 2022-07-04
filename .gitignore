@@ -9,3 +9,4 @@ __pycache__/*
 dist/
 build/
 maesters_nwp.egg-info
+maesters-nwp/*

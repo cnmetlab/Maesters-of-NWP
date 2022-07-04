@@ -10,7 +10,7 @@ with open(requirements_path) as f:
 
 setup(
     name='maesters-nwp',
-    version='0.0.6',
+    version='0.0.7',
     author='blizhan',
     author_email='blizhan@icloud.com',
     description='A package to get open NWP data in a elegant way',
@@ -26,5 +26,5 @@ setup(
     classifiers=[
         'Programming Language :: Python :: 3',
     ],
-    python_requires='>=3.8'
+    python_requires='>=3.7'
 )
