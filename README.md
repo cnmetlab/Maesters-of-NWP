@@ -39,13 +39,16 @@ pip install maesters-nwp
 ``` python
 from maester import Maesters
 
-ec = Maester('ecmwf','oper','2022-06-29 12:00',hour=[6,30],varname='TP_L0')
+ec = Maester(source='ecmwf', product='oper', date='2022-06-29 12:00',hour=[6,30],varname='TP_SFC')
 
 # get xarray object
 ec.xarray()
 
 # or only download (if lcoal_dir is not given, default download to current dir)
 ec.download(local_dir='./') 
+
+# or operation download all data of the newest batch, default download to $HOME/data/{source}/{product}/{batch:%Y%m%d%H0000}
+ec.operation(local_dir='./')
 
 ```
 ### Problem List
