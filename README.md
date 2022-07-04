@@ -1,7 +1,7 @@
 # Maesters - Numercial Weather Prediction
 ![](https://badgen.net/pypi/v/maesters-nwp) ![](https://badgen.net/badge/license/MIT/pink) ![](https://badgen.net/badge/github/blizhan/purple?icon=github) ![](https://badgen.net/https/cal-badge-icd0onfvrxx6.runkit.sh/Asia/Shanghai)
 
-![](https://raw.githubusercontent.com/blizhan/Maesters-of-NWP/main/pics/usage.png)
+![](https://raw.githubusercontent.com/blizhan/Maesters-of-NWP/main/pics/usage_20220704.png)
 
 A package focus on fecth open-source global numerical weather prediction product in a elegant way. 
 
