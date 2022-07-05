@@ -1,6 +1,6 @@
 # Maesters - Numercial Weather Prediction
 ![](https://badgen.net/pypi/v/maesters-nwp) ![](https://badgen.net/badge/license/MIT/pink) ![](https://badgen.net/badge/github/blizhan/purple?icon=github) ![](https://badgen.net/https/cal-badge-icd0onfvrxx6.runkit.sh/Asia/Shanghai)
-
+![](https://zenodo.org/badge/doi/10.5281/zenodo.6796046.svg)
 ![](https://raw.githubusercontent.com/blizhan/Maesters-of-NWP/main/pics/usage_20220704.png)
 
 A package focus on fecth open-source global numerical weather prediction product in a elegant way. 
@@ -25,7 +25,7 @@ The following data sources support is coming. 🚀🚀🚀
 ## How to install
 
 ### Dependence
-1. cdo,curl (install[cdo](https://anaconda.org/conda-forge/cdo), [curl](https://anaconda.org/conda-forge/curl))
+1. cdo,curl (install [cdo](https://anaconda.org/conda-forge/cdo), [curl](https://anaconda.org/conda-forge/curl))
 ```shell
 conda install -c conda-forge cdo curl
 ```
@@ -61,3 +61,5 @@ brew install proj
 pip install pyproj
 ```
 
+### Citation
+If this package give helps to your research or work, it will be a enjoyable thing to the contributors of this package. And if you are willing to cite the contribution of this package in your publication, you can find the DOI information at https://doi.org/10.5281/zenodo.6796046.
