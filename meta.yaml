@@ -45,12 +45,12 @@ test:
     - "curl -h"
 
 about:
-  home: "https://github.com/blizhan/Maesters-of-NWP"
+  home: "https://github.com/cnmetlab/Maesters-of-NWP"
   license: "MIT"
   license_family: "OTHER"
   license_file: LICENSE
   summary: "A package to get open NWP data in a elegant way"
-  dev_url: https://github.com/blizhan/Maesters-of-NWP
+  dev_url: https://github.com/cnmetlab/Maesters-of-NWP
 
 extra:
   recipe-maintainers:

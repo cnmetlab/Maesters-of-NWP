@@ -19,7 +19,7 @@ setup(
     description="A package to get open NWP data in a elegant way",
     long_description=description,
     long_description_content_type="text/markdown",
-    url="https://github.com/blizhan/Maesters-of-NWP",
+    url="https://github.com/cnmetlab/Maesters-of-NWP",
     package_dir={"maesters": "maesters", ".": "./"},
     package_data={
         "maesters": ["static/pf_split", "static/*/*.nc", "static/*/*.txt"],
