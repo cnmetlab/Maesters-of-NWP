@@ -1,7 +1,13 @@
 # Maesters - Numercial Weather Prediction
+
 ![](https://badgen.net/pypi/v/maesters-nwp) ![](https://badgen.net/badge/license/MIT/pink) ![](https://badgen.net/badge/github/cnmetlab/purple?icon=github) ![](https://badgen.net/https/cal-badge-icd0onfvrxx6.runkit.sh/Asia/Shanghai)
 ![](https://zenodo.org/badge/doi/10.5281/zenodo.6796046.svg)
+![](https://img.shields.io/badge/code%20style-black-000000.svg)
+![](https://badgen.net/github/checks/node-formidable/node-formidable/master/macos)
+![](https://badgen.net/github/checks/node-formidable/node-formidable/master/ubuntu?label=linux)
+
 ![](https://raw.githubusercontent.com/cnmetlab/Maesters-of-NWP/main/pics/usage_20220704.png)
+
 
 A package focus on fecth open-source global numerical weather prediction product in a elegant way. 
 
@@ -18,20 +24,25 @@ The following data sources support is coming. 🚀🚀🚀
 
   ❏ _National Oceanic and Atmospheric Adminstration_ - GFS
 
-  ❏ _Met Office_ - MOGREPS
+  ~~❏ _Met Office_ - MOGREPS~~ _(not open-source anymore)_
 
 
 
 ## How to install
 
-### Dependence
-1. cdo,curl (install [cdo](https://anaconda.org/conda-forge/cdo), [curl](https://anaconda.org/conda-forge/curl))
+> maesters-nwp depends on cdo. And as cdo is not supported on Windows platform, maesters-nwp fail to install on Windows.
+
+### Instal via conda (Recommended)
+```shell
+conda install -c conda-forge maesters-nwp
+```
+
+### Install via pip
+1. Install dependence cdo,curl (install [cdo](https://anaconda.org/conda-forge/cdo), [curl](https://anaconda.org/conda-forge/curl))
 ```shell
 conda install -c conda-forge cdo curl
 ```
-
-
-### Install
+2. Install maesters-nwp
 ```shell
 pip install maesters-nwp
 ```
