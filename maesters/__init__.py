@@ -111,6 +111,7 @@ class Maester:
             f"from citadels.{self.source.upper()}.{self.product.lower()} import operation;self._operation = operation"
         )
 
+        self.download_dict = {}
         if self.hour and isinstance(self.hour, int):
             self.download_dict = self._get_files_dict(
                 date=self.batch,
@@ -118,7 +119,7 @@ class Maester:
                 var_dict={self.variable: self.out},
                 **kwargs,
             )
-        elif self.hour and isinstance(hour, list):
+        elif self.hour and isinstance(self.hour, list):
             self.download_dict = {}
             for h in self.hour:
                 d = self._get_files_dict(

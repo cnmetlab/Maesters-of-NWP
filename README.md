@@ -50,7 +50,12 @@ pip install maesters-nwp
 ``` python
 from maester import Maesters
 
-ec = Maester(source='ecmwf', product='oper', batch='2022-06-29 12:00',hour=[6,30],varname='TP_SFC')
+# instantiate with source, product, batch (batch start time), hour (predict hour from bacth start time)
+ec = Maester(source='ecmwf', product='oper', batch='2022-08-22 12:00',hour=[6,30],varname='TP_SFC')
+
+# or instantiate with source, product, date (predict time),  batch (use newest bacth if batch is not given)
+ec = Maester(source='ecmwf', product='oper', date='2022-08-23 18:00', varname='TMP_SFC')
+
 
 # get xarray object
 ec.xarray()
@@ -61,6 +66,7 @@ ec.download(local_dir='./')
 # or operation download all data of the newest batch, default download to $HOME/data/{source}/{product}/{batch:%Y%m%d%H0000}
 ec.operation(local_dir='./')
 
+# more usage examples in example/example.ipynb
 ```
 
 ### Variable Name
