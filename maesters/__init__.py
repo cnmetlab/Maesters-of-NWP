@@ -4,6 +4,7 @@ import os, sys
 import shutil
 import tempfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import warnings
 
 sys.path.append(os.path.dirname(__file__))
 from config import DEFAULT_MAESTER, get_model
@@ -28,6 +29,20 @@ class Maester:
         # data_type: data type for ENS prediction to ECMWF ENFO, 'cf'/'pf1'/'pf2'/.../
         # stats: stats method for ENS prediction enfo or geps 'ensmean'/'ensmax'/'ensmin'
     ) -> None:
+        """ Maesters instance
+
+        Args:
+            source (str, optional): NWP Data Provider. Defaults to DEFAULT_MAESTER.get("source").
+            product (str, optional): NWP Product from Source. Defaults to DEFAULT_MAESTER.get("product").
+            varname (str, optional): NWP Variable name. Defaults to DEFAULT_MAESTER.get("varname").
+            batch (datetime, optional): NWP batch start time (UTC). Defaults to None.
+            date (datetime, optional): NWP predict time (UTC) (Notice: date should be larger than batch) . Defaults to None.
+            hour (int): NWP predict hour from batch start time. Defaults to None
+            datahome (str, optional): data save directory. Defaults to DEFAULT_MAESTER.get("datahome")
+
+        Raises:
+            Exception: _description_
+        """
 
         self.source = source
         self.product = product
@@ -35,29 +50,46 @@ class Maester:
         self.varname = varname
         self.model = get_model(source, product)
 
+        if date is None and hour is None:
+            raise Exception('One of "date", "hour" kwargs are needed')
+    
         if isinstance(date, str):
             date = pd.to_datetime(date)
 
         if hour is None and date:
-            now = datetime.utcnow().replace(
-                minute=0, second=0, microsecond=0
-            ) - timedelta(hours=self.model.delay_hours)
-            self.batch = now.replace(hour=int(now.hour / 12) * 12)
+            self.batch = self.get_batch(batch)
             if isinstance(date, datetime):
+                assert date > self.batch
                 self.hour = int((date - self.batch).total_seconds() / 3600)
             elif isinstance(date, list):
                 self.hour = []
                 for d in date:
                     if isinstance(d, str):
                         d = datetime.strptime(d, "%Y-%m-%d %H:%M")
+                        assert d > self.batch
                     self.hour.append(int((d - self.batch).total_seconds() / 3600))
-        else:
-            self.hour = hour
 
-        if isinstance(batch, datetime):
-            self.batch = batch
-        elif isinstance(batch, str):
-            self.batch = datetime.strptime(batch, "%Y-%m-%d %H:%M")
+        elif hour is not None and date is None:
+            self.hour = hour
+            self.batch = self.get_batch(batch)
+
+        elif hour is not None and date is not None:
+            self.batch = self.get_batch(batch)
+            if isinstance(hour, int):
+                if self.batch + timedelta(hours=hour) != date:
+                    raise Exception(f'batch is {self.batch}, hour {hour} and date {date} are in conflict ')
+                self.hour = hour
+            elif isinstance(hour, list) and isinstance(date, list):
+                for h,d in zip(hour,date):
+                    if isinstance(d, str):
+                        d = datetime.strptime(d, "%Y-%m-%d %H:%M")
+                    if self.batch + timedelta(hours=h) != d:
+                        raise Exception(f'batch is {self.batch}, hour {h} and date {d} are in conflict ')
+                self.hour = hour
+            elif isinstance(hour, list):
+                for h in hour:
+                    if self.batch + timedelta(hours=h) != date:
+                        raise Exception(f'batch is {self.batch}, hour{h} and date {date} are in conflict ')
 
         for k, v in kwargs.items():
             setattr(self, k, v)
@@ -97,6 +129,9 @@ class Maester:
                 )
                 for k, v in d.items():
                     self.download_dict[k] = v
+        
+        if len(self.download_dict) == 0:
+            print('Not available date found')
 
     def download(self, local_dir: str = "./"):
         # import model download method
@@ -143,6 +178,16 @@ class Maester:
             self._data = xr.open_mfdataset(self.local_fp, combine="nested")
             shutil.rmtree(tmp_dir)
             return self._data
+
+    def get_batch(self, batch):
+        if isinstance(batch, str):
+            batch = pd.to_datetime(batch)
+        elif isinstance(batch, str):
+            batch = datetime.strptime(batch, "%Y-%m-%d %H:%M")
+        now = datetime.utcnow().replace(
+            minute=0, second=0, microsecond=0
+        ) - timedelta(hours=self.model.delay_hours)
+        return now.replace(hour=int(now.hour / 12) * 12) if batch is None else batch
 
 
 if __name__ == "__main__":

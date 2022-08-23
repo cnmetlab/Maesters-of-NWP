@@ -62,6 +62,15 @@ ec.download(local_dir='./')
 ec.operation(local_dir='./')
 
 ```
+
+### Variable Name
+
+| Source    | Variable |
+|-----------|----------|
+| ecmwf     | [variables](maesters/config/cmc.toml)|
+| dwd       | [variables](maesters/config/dwd.toml)|
+| cmc       | [variables](maesters/config/cmc.toml)
+
 ### Problem List
 _<font color=#008000 >P1: </font>_ _pyporj instal fail on M1 chip_
 
