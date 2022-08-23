@@ -50,7 +50,7 @@ pip install maesters-nwp
 ``` python
 from maester import Maesters
 
-ec = Maester(source='ecmwf', product='oper', date='2022-06-29 12:00',hour=[6,30],varname='TP_SFC')
+ec = Maester(source='ecmwf', product='oper', batch='2022-06-29 12:00',hour=[6,30],varname='TP_SFC')
 
 # get xarray object
 ec.xarray()
