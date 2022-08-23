@@ -48,7 +48,7 @@ pip install maesters-nwp
 ```
 ### Usage
 ``` python
-from maester import Maesters
+from maesters import Maester
 
 # instantiate with source, product, batch (batch start time), hour (predict hour from bacth start time)
 ec = Maester(source='ecmwf', product='oper', batch='2022-08-22 12:00',hour=[6,30],varname='TP_SFC')
