@@ -1,29 +1,26 @@
 from glob import glob
 import shutil
-import requests
 from datetime import datetime, timedelta
 import json
 import os
 import sys
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor, as_completed
-
-# from subprocess import call
 import warnings
 
+import requests
 from loguru import logger
 import pandas as pd
 import numpy as np
 from retrying import retry
 from pandas.core.common import SettingWithCopyWarning
 
+from maesters.config import get_model, V  # , PATH
+from maesters.utils import batch_range_download, single_range_download
+from maesters.utils.post_process import batch_convert_nc, single_convert_nc
+
 warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
 
 MAESTERS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(MAESTERS)
-from config import get_model, V  # , PATH
-from utils import batch_range_download, single_range_download
-from utils.post_process import batch_convert_nc, single_convert_nc
-
 
 logger.add(
     os.path.join(os.path.dirname(MAESTERS), "log/ECMWF_OPER_{time:%Y%m%d}"),
@@ -176,7 +173,8 @@ def save_ecmwf_oper(date: datetime, local_dir: str):
                 fail.extend(res)
             else:
                 logger.info(
-                    f'ECMWF_OPER: [DATE: {date:%Y%m%d} BATCH: {str(date.hour).zfill(2)} HOUR: {HOURS["medium"][n]}] DOWNLOAD FINISH'
+                    f"ECMWF_OPER: [DATE: {date:%Y%m%d} BATCH: {str(date.hour).zfill(2)} "
+                    f'HOUR: {HOURS["medium"][n]}] DOWNLOAD FINISH'
                 )
 
     fail = batch_range_download(fail, file_type="grib")
@@ -204,7 +202,7 @@ def convert_ecmwf_oper(grib_dir: str, out_dir: str):
         logger.error(fail)
         return -1
     else:
-        logger.info(f"ECMWF_OPER: ALL CONVERT FINISH")
+        logger.info("ECMWF_OPER: ALL CONVERT FINISH")
         return 0
 
 

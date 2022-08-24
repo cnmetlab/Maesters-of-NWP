@@ -1,14 +1,14 @@
+import os
+import sys
+from datetime import datetime, timedelta
+
 from loguru import logger
 import pandas as pd
 
-from datetime import datetime, timedelta
-import os
-import sys
+from maesters.config import NCEP_FNL, V, PATH
+from maesters.utils import auth_download
 
 MAESTERS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(MAESTERS)
-from config import NCEP_FNL, V, PATH
-from utils import auth_download
 
 passwd = None
 if len(sys.argv) < 3:

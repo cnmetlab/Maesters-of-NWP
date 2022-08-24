@@ -1,32 +1,24 @@
+import re
+import os
+import sys
+from datetime import datetime, timedelta
 import shutil
+from glob import glob
+from concurrent.futures import ProcessPoolExecutor, as_completed
+
+import requests
 from retrying import retry
 from bs4 import BeautifulSoup
 from loguru import logger
 
-# import pygrib
-
-from glob import glob
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
-
-# from subprocess import call,check_output
-from datetime import datetime, timedelta
-import requests
-import re
-import os
-import sys
-
-# import shutil
-
-MAESTERS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(MAESTERS)
-from config import V, get_model
-from utils.download import batch_session_download, single_session_download
-from utils.post_process import (
-    batch_ens_mean,
-    single_ens_mean,
+from maesters.config import V, get_model
+from maesters.utils.download import batch_session_download, single_session_download
+from maesters.utils.post_process import (
     batch_convert_nc,
     single_convert_nc,
 )
+
+MAESTERS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 logger.add(
     os.path.join(os.path.dirname(MAESTERS), "log/GEM_{time:%Y%m%d}"),
@@ -42,7 +34,7 @@ HOURS = {"medium": list(range(3, 240, 3))}
 
 def parse_filename(fn):
     "CMC_geps-{TYPE}_{var}_{level_type}_{level}_latlon0p5x0p5_%Y%m%d%H_P{hour}_allmbrs.grib2"
-    parse_pattern = "CMC_glb_([A-Z]+)_([A-Z]+)_([0-9A-Za-z]+)_([0-9a-zA-Z\.]+)_([0-9]+)_P([0-9]+).grib2"
+    parse_pattern = r"CMC_glb_([A-Z]+)_([A-Z]+)_([0-9A-Za-z]+)_([0-9a-zA-Z\.]+)_([0-9]+)_P([0-9]+).grib2"
     # parse_pattern = f'CMC_geps-{prod}_([A-Z]+)_([A-Z]+)_([0-9A-Za-z]+)_([0-9A-Za-z]+)_([0-9]+)_P([0-9]+)_*'
     match = re.match(parse_pattern, fn)
     if match:
@@ -108,7 +100,6 @@ def save_cmc_gem(date: datetime, local_dir: str):
     batch = date.hour
     logger.info(f"GEM {date:%Y%m%d}{str(batch).zfill(2)} download start")
     hours = HOURS["medium"]
-    retry_flag = False
     results = []
     fail = []
     with ProcessPoolExecutor(max_workers=PARALLEL_NUM) as pool:
@@ -154,7 +145,7 @@ def convert_cmc_gem(grib_dir: str, out_dir: str):
         logger.error(fail)
         return -1
     else:
-        logger.info(f"CMC_GEM: ALL CONVERT FINISH")
+        logger.info("CMC_GEM: ALL CONVERT FINISH")
         return 0
 
 
