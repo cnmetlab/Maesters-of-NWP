@@ -1,5 +1,6 @@
 # Maesters - Numercial Weather Prediction
 
+[![Documentation Status](https://readthedocs.org/projects/maesters-of-nwp/badge/?version=latest)](https://maesters-of-nwp.readthedocs.io/zh/latest/?badge=latest)
 ![](https://badgen.net/pypi/v/maesters-nwp) ![](https://badgen.net/badge/license/MIT/pink) ![](https://badgen.net/badge/github/cnmetlab/purple?icon=github) ![](https://badgen.net/https/cal-badge-icd0onfvrxx6.runkit.sh/Asia/Shanghai)
 ![](https://zenodo.org/badge/doi/10.5281/zenodo.6796046.svg)
 ![](https://img.shields.io/badge/code%20style-black-000000.svg)
