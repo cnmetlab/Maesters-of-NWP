@@ -1,15 +1,15 @@
 from glob import glob
 import shutil
-import requests
 from datetime import datetime, timedelta
 import json
 import os
 import sys
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor, as_completed
-
-# from subprocess import call
 import warnings
 
+# from subprocess import call
+
+import requests
 import boto3
 import botocore
 from loguru import logger
@@ -18,14 +18,12 @@ import numpy as np
 from retrying import retry
 from pandas.core.common import SettingWithCopyWarning
 
+from maesters.config import get_model, V  # , PATH
+from maesters.utils import batch_range_download, single_range_download
+from maesters.utils.post_process import batch_convert_nc, single_convert_nc
+
 warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
-
 MAESTERS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(MAESTERS)
-from config import get_model, V  # , PATH
-from utils import batch_range_download, single_range_download
-from utils.post_process import batch_convert_nc, single_convert_nc
-
 
 logger.add(
     os.path.join(os.path.dirname(MAESTERS), "log/NOAA_GFS_{time:%Y%m%d}"),
@@ -55,13 +53,19 @@ def get_url_detail(s3url: str) -> pd.DataFrame:
 
     res_dict = []
     try:
-        client = boto3.client('s3', config=botocore.client.Config(signature_version=botocore.UNSIGNED))
-        bucket = s3url.split('/')[0]
-        prefix = '/'.join(s3url.split('/')[1:])
-        r = client.get_object(Bucket=bucket,Key=prefix)
-        body =  r.get('Body')
-        var = [(i.split(':')[3],i.split(':')[1],i.split(':')[4]) for i in body.decode('utf-8').split('\n') if len(i)]
-        df = pd.DataFrame(var,columns=['var','bytes_start','level'])
+        client = boto3.client(
+            "s3", config=botocore.client.Config(signature_version=botocore.UNSIGNED)
+        )
+        bucket = s3url.split("/")[0]
+        prefix = "/".join(s3url.split("/")[1:])
+        r = client.get_object(Bucket=bucket, Key=prefix)
+        body = r.get("Body")
+        var = [
+            (i.split(":")[3], i.split(":")[1], i.split(":")[4])
+            for i in body.decode("utf-8").split("\n")
+            if len(i)
+        ]
+        df = pd.DataFrame(var, columns=["var", "bytes_start", "level"])
         r = requests.get(query_url)
         content = r.text
         for c in content.split("\n")[:]:
@@ -94,9 +98,7 @@ def get_url_detail(s3url: str) -> pd.DataFrame:
     return df
 
 
-def get_files_dict(
-    date: datetime, hour: int, var_dict=NOAA_GFS.variable
-) -> dict:
+def get_files_dict(date: datetime, hour: int, var_dict=NOAA_GFS.variable) -> dict:
     """get download list at date batch hour
 
     Args:

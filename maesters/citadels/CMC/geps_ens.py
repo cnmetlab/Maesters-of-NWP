@@ -1,31 +1,23 @@
-from glob import glob
-import shutil
-from retrying import retry
-from bs4 import BeautifulSoup
-from loguru import logger
-
-# import pygrib
-
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
-
-# from subprocess import call,check_output
-from datetime import datetime, timedelta
 import requests
 import re
 import os
 import sys
+from glob import glob
+from datetime import datetime, timedelta
+import shutil
+from concurrent.futures import ProcessPoolExecutor, as_completed
+
+
+from retrying import retry
+from bs4 import BeautifulSoup
+from loguru import logger
+
+from maesters.utils.post_process import batch_ens_stats
+from maesters.config import get_model, V
+from maesters.utils.download import batch_session_download, single_session_download
+from maesters.utils.post_process import single_ens_mean, single_ens_stats
 
 MAESTERS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(MAESTERS)
-from utils.post_process import batch_ens_stats
-
-# import shutil
-
-MAESTERS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(MAESTERS)
-from config import get_model, V
-from utils.download import batch_session_download, single_session_download
-from utils.post_process import batch_ens_mean, single_ens_mean, single_ens_stats
 
 logger.add(
     os.path.join(os.path.dirname(MAESTERS), "log/GEPS_ENS_{time:%Y%m%d}"),
@@ -148,7 +140,6 @@ def save_geps_ens(date: datetime, local_dir: str, product="raw"):
     hours = (
         HOURS["subseason"] if date.weekday() in [3] and batch == 0 else HOURS["medium"]
     )
-    retry_flag = False
     results = []
     fail = []
     with ProcessPoolExecutor(max_workers=PARALLEL_NUM) as pool:

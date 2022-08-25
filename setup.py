@@ -1,14 +1,12 @@
 import os
 from setuptools import find_packages, setup
 
-with open(
-    os.path.join(os.path.dirname(os.path.realpath(__file__)), "README.md"), "r"
-) as f:
+BASE_PATH = os.path.dirname(os.path.realpath(__file__))
+
+with open(os.path.join(BASE_PATH, "README.md"), "r") as f:
     description = f.read()
-requirements_path = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), "requirements.txt"
-)
-with open(requirements_path) as f:
+
+with open(os.path.join(BASE_PATH, "requirements.txt")) as f:
     required = f.read().splitlines()
 
 setup(

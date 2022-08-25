@@ -1,25 +1,21 @@
-# from retrying import retry
+import re
+import os
+import sys
+from datetime import datetime, timedelta
 import shutil
+from glob import glob
+from concurrent.futures import ProcessPoolExecutor, as_completed
+
+import requests
 from bs4 import BeautifulSoup
 from loguru import logger
 from retrying import retry
 
-from glob import glob
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
-
-# from subprocess import call,check_output
-from datetime import datetime, timedelta
-import requests
-import re
-import os
-import sys
-
+from maesters.config import get_model, V
+from maesters.utils.download import batch_session_download, single_session_download
+from maesters.utils.post_process import batch_tri_transform, single_tri_transform
 
 MAESTERS = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(MAESTERS)
-from config import get_model, V
-from utils.download import batch_session_download, single_session_download
-from utils.post_process import batch_tri_transform, single_tri_transform
 
 logger.add(
     os.path.join(os.path.dirname(MAESTERS), "log/DWD_ICON_{time:%Y%m%d}"),
@@ -43,7 +39,7 @@ def parse_filename(fn: str):
         _type_: _description_
     """
     parse_pattern = (
-        f"icon_global_[a-z]+_([a-z]+)-[a-z]+_([0-9]+)_([0-9]+)_([0-9A-Z\_]+).grib2*"
+        r"icon_global_[a-z]+_([a-z]+)-[a-z]+_([0-9]+)_([0-9]+)_([0-9A-Z\_]+).grib2*"
     )
     match = re.match(parse_pattern, fn)
     return match
@@ -73,7 +69,7 @@ def get_files_dict(
             bs_items = BeautifulSoup(resp.text, "html.parser")
             files_list = [
                 i["href"]
-                for i in bs_items.find_all("a", text=re.compile(f"icon_global_*"))
+                for i in bs_items.find_all("a", text=re.compile("icon_global_*"))
             ]
             for f in files_list:
                 match = parse_filename(f)
@@ -160,7 +156,8 @@ def save_dwd_icon(date: datetime, local_dir: str):
                 fail.extend(res)
             else:
                 logger.info(
-                    f"DWD_ICON: [DATE: {date:%Y%m%d} BATCH: {str(batch).zfill(2)} VARNAME: {list(DWD_ICON.variable.keys())[n].varname}] DOWNLOAD FINISH"
+                    f"DWD_ICON: [DATE: {date:%Y%m%d} BATCH: {str(batch).zfill(2)} "
+                    f"VARNAME: {list(DWD_ICON.variable.keys())[n].varname}] DOWNLOAD FINISH"
                 )
 
     fail = batch_session_download(fail, file_type="bz2")
@@ -220,7 +217,7 @@ def dwd_transform(
         logger.error(fail)
         return -1
     else:
-        logger.info(f"DWD_ICON: ALL TRI-TRANSFORM FINISH")
+        logger.info("DWD_ICON: ALL TRI-TRANSFORM FINISH")
         return 0
 
 
